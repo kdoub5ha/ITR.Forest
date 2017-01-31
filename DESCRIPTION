@@ -18,7 +18,8 @@ Imports:
     dplyr, 
     RColorBrewer,
     e1071,
-    DTRlearn
+    DTRlearn, 
+    ggplot2
 License: No license
 LazyData: true
 RoxygenNote: 5.0.1.9000
