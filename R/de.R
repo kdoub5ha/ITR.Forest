@@ -1,4 +1,4 @@
-#' Finds all decendants of a particular node in a tree.  Used in the send.down.VI.ITR function. 
+#' Finds all decendants of a particular node in a tree.  Can be used to calculate statistics for a sample.  It is built into the variable importance functions.    
 #' 
 #' @param x node 
 #' @param tree interaction tree 
