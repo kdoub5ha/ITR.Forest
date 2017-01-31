@@ -1,6 +1,7 @@
 #' Builds the random forest of interaction trees
 #' 
 #' @param dat the data set being used to grow the random forest. Required input. 
+#' @param test indicates if testing data for each tree is to be run down the tree and included in the RF output.  Defaults to FALSE. 
 #' @param col.y the response variable. Required input. 
 #' @param col.trt the treatment indicator.  Must be binary. Required input.
 #' @param col.prtx the probability of being assigned to treatment group. Required input. 
@@ -22,20 +23,24 @@
 #' in treatment group, respectively.  The splitting variables are found in columns 3-7.
 
 
-Build.RF.ITR <- function(dat, col.y, col.trt, col.prtx, split.var, ctg=NA,N0=20, n0=5,  max.depth=10,ntree=500, 
-                         mtry = max(floor(length(split.var)/3), 1),avoid.nul.tree=F)
+Build.RF.ITR<-function(dat, test=FALSE, col.y, col.trt, col.prtx=col.prtx, split.var, ctg=NULL,N0=20, n0=5,  max.depth=10,ntree=500, 
+         mtry = max(floor(length(split.var)/3), 1),avoid.nul.tree=F)
 {
   out <- as.list(NULL)
-  #names(dat)[c(col.y, col.trt,col.prtx)] <- c("y", "trt","prtx")
   out$ID.Boots.Samples  <- as.list(1:ntree)
   out$TREES <- as.list(1:ntree)
   b <- 1
   while (b <= ntree) {
-    # This section will generate bootstrap samples
+    # TAKE BOOTSTRAP SAMPLES
     id.b <- sample(1:nrow(dat), size=nrow(dat), replace = T)
-    dat.b <- dat[id.b,]
-    #Grow a tree with the bootstrap data
-    tre.b <- grow.ITR(data=dat.b, test=NULL, min.ndsz=N0, n0=n0, split.var=split.var, ctg=ctg, max.depth=10, mtry=mtry)
+    dat.b <- dat[unique(id.b),]
+    dat.test <- dat[-unique(id.b),]
+    # Generate tree based on b-th bootstrap sample
+    if(test==FALSE){
+      tre.b <- grow.ITR(data=dat.b, test=NULL, min.ndsz=N0, n0=5, split.var=split.var, ctg=NULL, max.depth=15, mtry=mtry)
+    } else {
+      tre.b <- grow.ITR(data=dat.b, test=dat.test, min.ndsz=N0, n0=5, split.var=split.var, ctg=NULL, max.depth=15, mtry=mtry)
+    } 
     if (avoid.nul.tree) {
       if (nrow(tre.b) > 1) {
         out$ID.Boots.Samples[[b]] <- id.b
@@ -49,7 +54,7 @@ Build.RF.ITR <- function(dat, col.y, col.trt, col.prtx, split.var, ctg=NA,N0=20,
       b <- b +1		
     }
   }
-  #Generate the tree summary for output
+  
   Model.Specification <- as.list(NULL)
   Model.Specification$data <- dat
   Model.Specification$split.var <- split.var
