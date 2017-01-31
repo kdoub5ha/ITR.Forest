@@ -37,3 +37,5 @@ tree<-grow.ITR(data=rctdata, split.var=3:7)
 Generates tree using rctdata with potential splitting variables located in columns 3-7.
 }
 
+
+
