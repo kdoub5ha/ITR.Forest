@@ -4,12 +4,14 @@
 \alias{Build.RF.ITR}
 \title{Builds the random forest of interaction trees}
 \usage{
-Build.RF.ITR(dat, col.y, col.trt, col.prtx, split.var, ctg = NA, N0 = 20,
-  n0 = 5, max.depth = 10, ntree = 500,
+Build.RF.ITR(dat, test = FALSE, col.y, col.trt, col.prtx = col.prtx,
+  split.var, ctg = NULL, N0 = 20, n0 = 5, max.depth = 10, ntree = 500,
   mtry = max(floor(length(split.var)/3), 1), avoid.nul.tree = F)
 }
 \arguments{
 \item{dat}{the data set being used to grow the random forest. Required input.}
+
+\item{test}{indicator that determines if testing data is also run with each tree in the forest.  Defaults to FALSE.}
 
 \item{col.y}{the response variable. Required input.}
 

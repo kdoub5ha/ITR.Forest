@@ -8,7 +8,7 @@ If depth=1, then subgrp=(x1<=cut1)
 If depth!=1 then subgrp=(x1>=0.3 & x3>=0.1)}
 \usage{
 rdat(n = 100, K = 50, beta1 = 2, beta2 = 2, sigma = 1, cut1 = 0.5,
-  cut2 = 0.5, depth = 1)
+  cut2 = 0.5, cut3 = 0.3, cut4 = 0.1, depth = 1)
 }
 \arguments{
 \item{n}{size of the dataset to be generate.  Defaults to 100.}

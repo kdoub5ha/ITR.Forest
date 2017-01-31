@@ -8,7 +8,7 @@ where subgrp is the group of interacting variable(s).
 If depth=1, then subgrp=(X1 < 0.5)
 If depth!=1 then subgrp=(X1>0.3 & X3>0.1)}
 \usage{
-gdataM(n, depth, beta1, beta2)
+gdataM(n, depth, beta1, beta2, cut1 = 0.5, cut2 = 0.3, cut3 = 0.1)
 }
 \arguments{
 \item{n}{size of the dataset to be generate.  Required input.}
@@ -20,6 +20,12 @@ covariates X1 and X3 both interact with treatment effect (one-way interactions).
 \item{beta1}{controls the strength of the treatment effect. Required input.}
 
 \item{beta2}{controls the strength of the noise. Required input.}
+
+\item{cut1}{cutpoint for depth=1 on covariate X1.}
+
+\item{cut2}{cutpoint for depth=2 on covariate X1.}
+
+\item{cut3}{cutpoint for depth=2 on covariate X3.}
 }
 \value{
 dataframe containing y (outcome), X1-X4 (covariates), trt (treatment), prtx (probability of being in treatment group)

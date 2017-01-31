@@ -5,7 +5,7 @@
 \title{Sends testing data down a tree to assess the performance of the tree. This is used inside
 the variable importance function.}
 \usage{
-send.down.VI.ITR(dat.new, tre, col.y, col.trt, col.prtx, ctg = NA, n0 = 5,
+send.down.VI.ITR(dat.new, tre, col.y, col.trt, col.prtx, ctg = NULL, n0 = 5,
   revise.tree = T, depth = 1)
 }
 \arguments{
