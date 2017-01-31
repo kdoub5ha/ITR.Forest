@@ -11,3 +11,9 @@ export(itrtest2)
 export(partition.ITR)
 export(rdat)
 export(send.down.VI.ITR)
+
+import(glmnet)
+import(e1071)
+import(dplyr)
+import(RColorBrewer)
+
