@@ -5,7 +5,7 @@
 \title{Calcuates variable importance measures for a random forest object.  Input must be an object
  from the random forest function Build.RF.ITR.}
 \usage{
-Variable.Importance.ITR(RF.fit, n0 = 2, sort = T, details = F,
+Variable.Importance.ITR(RF.fit, n0 = 5, sort = T, details = F,
   truncate.zeros = T, depth = 1)
 }
 \arguments{
@@ -28,4 +28,5 @@ summary of tree performance
 Calcuates variable importance measures for a random forest object.  Input must be an object
  from the random forest function Build.RF.ITR.
 }
+
 
