@@ -10,6 +10,9 @@
 #'  covariates X1 and X3 both interact with treatment effect (one-way interactions). Required input.
 #' @param beta1 controls the strength of the treatment effect. Required input. 
 #' @param beta2 controls the strength of the noise. Required input. 
+#' @param cut1 cutpoint for depth=1 on covariate X1. 
+#' @param cut2 cutpoint for depth=2 on covariate X1. 
+#' @param cut3 cutpoint for depth=2 on covariate X3. 
 #' @return dataframe containing y (outcome), X1-X4 (covariates), trt (treatment), prtx (probability of being in treatment group)
 #' @export
 #' @examples
@@ -18,32 +21,37 @@
 #' the treatment, and a signal to noise ratio of 1/2.
 
 
-gdataM <- function(n,depth, beta1, beta2){
-  NX  <- 4   #Number of covariates
-  NPATIENT  <- n    #Number of patients
-  covariatesX <<- matrix(runif(NX*NPATIENT),nrow=NPATIENT)   #Store randomly generated covariate values
-  expLogit  <- exp(-4+3*covariatesX[,1]+5*covariatesX[,3])   #Generate odds of being on trt based on propensity score
-  treatmentProbT  <- expLogit/(1+expLogit)    #Switch to probability
-  #Assign treatment based on propensity scores
+gdataM <- function(n,depth, beta1, beta2, 
+                   cut1=0.5, cut2=0.3, cut3=0.1){
+  NX  <- 4
+  NPATIENT  <- n
+  covariatesX <<- matrix(runif(NX*NPATIENT),nrow=NPATIENT)
+  expLogit  <- exp(-4+3*covariatesX[,1]+5*covariatesX[,3])
+  treatmentProbT  <- expLogit/(1+expLogit)
+  #treatmentProbT  <- 0.5
   treatmentT  <- rbinom(NPATIENT,1,treatmentProbT)
-  #The case where only X1 interacts with treatment effect
+  frame<-data.frame(covariatesX, treatmentT)
+  model<-glm(treatmentT~., data=frame, family=binomial(link="logit"))
+  preds<-predict(model, frame)
+  odds<-exp(preds)
+  prtx<-round(odds/(1+odds),3)
+  
   if(depth==1){
-    subGroupIndex  <- ( covariatesX[,1] < 0.5)
-  #The case where both X1 and X3 interact with treatment effect
+    subGroupIndex  <- ( covariatesX[,1] < cut1)
   }else {
-    subGroupIndex  <- ( covariatesX[,1] > 0.3 & covariatesX[,3] > 0.1)
+    subGroupIndex  <- ( covariatesX[,1] > cut2 & covariatesX[,3] > cut3)
   }
   
-  #Response for treatment group
+  
   responseY1Mean  <- 1 + 2*covariatesX[,2] + 4*covariatesX[,4] + beta1*(subGroupIndex)*treatmentT
-  responseY1  <- responseY1Mean  +  rnorm(NPATIENT);
-  #Response for control group
+  responseY1  <- responseY1Mean  +  rnorm(NPATIENT)
+  
   responseY0Mean  <- 1 + 2*covariatesX[,2] + 4*covariatesX[,4] + beta2*(1-subGroupIndex)*(1-treatmentT)
-  responseY0  <- responseY0Mean + rnorm(NPATIENT);
-  #Combine treatment and control
+  responseY0  <- responseY0Mean + rnorm(NPATIENT)
+  
   responseY  <- treatmentT*responseY1+(1-treatmentT)*responseY0
-  #Generate dataframe
-  dataM  <- as.data.frame(cbind(covariatesX,responseY,treatmentT,treatmentProbT));
-  names(dataM)  <- c(paste("X",c(1:4), sep=""),"y","trt","prtx");
+  
+  dataM  <- as.data.frame(cbind(covariatesX,responseY,treatmentT,treatmentProbT))
+  names(dataM)  <- c(paste("X",c(1:4), sep=""),"y","trt","prtx")
   dataM
 }
