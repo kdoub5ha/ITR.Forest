@@ -65,7 +65,7 @@ send.down.VI.ITR<-function(dat.new, tre, col.y, col.trt, col.prtx, ctg=NULL, n0=
         node.dat[in.node & is.element(x.split, cut1)] <- paste(l.nd, 1, sep="")    
         node.dat[in.node & !is.element(x.split, cut1)] <- paste(r.nd, 2, sep="")  	             
       }
-      t2 <- itrtest2(dat0, z, n0=5)
+      t2 <- itrtest(dat0, z, n0=5)
       tre0$score.test[i] <- t2
     }
     if (is.na(t2) && revise.tree) {
