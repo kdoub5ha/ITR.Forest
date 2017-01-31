@@ -1,4 +1,4 @@
-.onLoad <- function(.., ITR.forest){
+.onAttach <- function(libname, pkgname){
   options(stringsAsFactors = F)   
   install.packages("glmnet")
   install.packages("dplyr")
