@@ -9,15 +9,15 @@
 #' @param n0 minimum number of treatment/control observations needed in a split to call a node terminal. Defaults to 5. 
 #' @param max.depth controls the maximum depth of the tree. Defaults to 15. 
 #' @param mtry sets the number of randomly selected splitting variables to be included. Defaults to number of splitting variables.
+#' @param max.score controls the minimum score required to make an additional split (internally controlled).
 #' @return partition information based on itr value 
 #' @export
 
 
 
-
-partition.ITR <- function(dat, test=NULL, name="0", min.ndsz=20, n0=5, split.var, ctg=NULL, max.depth=15, mtry=length(split.var))
+partition.ITR<-function(dat, test=NULL, name="0", min.ndsz=20, n0=5, split.var, ctg=ctg, max.depth=15, mtry=length(split.var), temp.tree=NULL, full=NULL)
 {   
-  # here we initialize splitting and node info variables
+  # inialize various variable
   call <- match.call()
   out <- match.call(expand = F)
   out$info <- NULL
@@ -31,6 +31,7 @@ partition.ITR <- function(dat, test=NULL, name="0", min.ndsz=20, n0=5, split.var
   name.r <- paste(name, 2, sep="")
   # sample size
   n <- nrow(dat)
+  full.set <- full
   # check whether testing data is provided
   if (!is.null(test)) {
     n.test <- nrow(test)
@@ -44,11 +45,35 @@ partition.ITR <- function(dat, test=NULL, name="0", min.ndsz=20, n0=5, split.var
   # at the initial stage, there is no subgroup. 
   # Inidividuals either assign to trt=1 (z=rep(1,dim(dat)[1]))  
   # or trt=0 (z=rep(0,dim(dat)[1])) depending on which one gives better utility.
-  # This step uses the itrtest function 
-  if(name==0){
+  # This sets the default utility as the max of all patients in treatment or all in control
+  if(name=="0"){
     max.score <- max(itrtest(dat, z=rep(0,dim(dat)[1]), n0),itrtest(dat, z=rep(1,dim(dat)[1]), n0))
   }else{
-    max.score <- itrtest(dat, z=dat$new.trt, n0)
+    send<-send.down(full.set, temp.tree)
+    node<-substr(send$data$node,1,nchar(send$data$node)-1)
+    direction<-substr(send$data$node,nchar(send$data$node),nchar(send$data$node))
+    trt.dir <- temp.tree[match(node,temp.tree$node),]$cut.1
+    
+    trt.pred<-ifelse(trt.dir=="r" & direction=="1",0,
+                     ifelse(trt.dir=="r" & direction=="2",1,
+                            ifelse(trt.dir=="l" & direction=="1",1,0)))
+    
+    max.score <- itrtest(dat = full.set, z=trt.pred, n0)
+    
+    #Obtain treatments for those not included in the node
+    #if(length(list.nd)>1) dat<-dat[,-which(colnames(dat)=="new.trt")]
+    send<-dat.rest<-node<-direction<-trt.dir<-trt.pred<-NULL
+    node.dat <- dat
+    dat.rest <- suppressMessages(anti_join(full.set, node.dat[, c(split.var, which(colnames(node.dat)=="y"), which(colnames(node.dat)=="trt"))]))
+    send<-send.down(dat.rest, temp.tree)
+    node<-substr(send$data$node,1,nchar(send$data$node)-1)
+    direction<-substr(send$data$node,nchar(send$data$node),nchar(send$data$node))
+    trt.dir <- temp.tree[match(node,temp.tree$node),]$cut.1
+    
+    trt.pred<-ifelse(trt.dir=="r" & direction=="1",0,
+                     ifelse(trt.dir=="r" & direction=="2",1,
+                            ifelse(trt.dir=="l" & direction=="1",1,0)))
+    dat.rest$trt.new<-trt.pred
   }
   
   # extract value from data
@@ -63,36 +88,36 @@ partition.ITR <- function(dat, test=NULL, name="0", min.ndsz=20, n0=5, split.var
     trt.effect <- mean(y[trt==1]) - mean(y[trt==0])
   }
   # CONTROL THE MAX TREE DEPTH
-  # name is the currently tree label.
+  # name is the current tree label.
   # only when currently depth < max.depth and n > min terminal node proceed.
   depth <- nchar(name) 
-  if (depth <= max.depth && n >= min.ndsz) {  #this is probably not necessary
+  if (depth <= max.depth && n >= min.ndsz) {
     if (is.null(mtry)) {
       m.try = length(split.var)
     }else{
       m.try = mtry
     }
-    # if this is not random forrest, program will loop over all covariates.
-    #for functions gdataM and rdat, split.var size is 4 and m.try is 4
-    for(i in sample(split.var, size=m.try, replace=F)) { 
+    
+    # Search across all covariates
+    for(i in sample(split.var, size=m.try, replace=F)) {
       x <- dat[,i]
       v.name <- vnames[i]
       temp <- sort(unique(x))
-      if(length(temp) > 1) {
-        #this will set the possible cut values for the variable
-        # check if variable is categorical first
+      if(length(temp) > 1) { 
+        # handle categorial variable first, otherwise take out the final value as no cut after it.
         if (is.element(i,ctg)){
           zcut <- power.set(temp)
-        #if not categorical, handle as continuous
         } else{
           zcut <- temp[-length(temp)]
         }
-        # zcut are the values for all possible cut 
+        # zcut are the values for all possible cuts 
         for(j in zcut) {
           score <- NA
           if (is.element(i,ctg)){
-            grp <- sign(is.element(x, j))
-            cut1 <- paste(j, collapse=" ")
+            grp.l <- sign(is.element(x, j))
+            grp.r <- sign(!is.element(x, j))    #This is modified
+            cut1.l <- cbind("l", as.character(j))    #This is modified
+            cut1.r <- cbind("r", as.character(j))    #This is modified
           } else  {
             # define left and right groups
             grp.l <- sign(x <= j)
@@ -100,15 +125,31 @@ partition.ITR <- function(dat, test=NULL, name="0", min.ndsz=20, n0=5, split.var
             grp.r <- sign(x > j)
             cut1.r <- cbind("r",as.character(j))
           }
-          # use itr rule to calcuate the value function value for each split
-          n.1 <- sum(grp.l==1)
-          n.0 <- n-n.1
-          score.l <- itrtest2(dat, z=grp.l, n0)
-          n.1 <- sum(grp.r==1)
-          n.0 <- n-n.1
-          score.r <- itrtest2(dat, z=grp.r, n0)
-          # record the one with improved value score
-          # the following runs through the possible scenarios
+          dat.temp <- NULL
+          if(name=="0") dat.temp <- dat
+          if(name != "0") dat.temp <- dat[,-which(colnames(dat)=="new.trt")]
+          dat.temp$trt.new <- grp.l
+          
+          # use itr rule to calcuate measure of splitting
+          #n.1 <- sum(grp.l==1)
+          #n.0 <- n-n.1
+          if(name=="0") {
+            dat.comb<-dat.temp
+          } else{
+            dat.comb <- rbind(dat.rest, dat.temp)
+          }
+          score.l <- itrtest(dat.comb, z=dat.comb$trt.new, n0)
+          #n.1 <- sum(grp.r==1)
+          #n.0 <- n-n.1
+          if(name=="0") {
+            dat.temp$trt.new <- 1-dat.temp$trt.new
+            dat.comb<-dat.temp
+          } else{
+            dat.temp$trt.new <- 1-dat.temp$trt.new
+            dat.comb <- rbind(dat.rest, dat.temp)
+          }
+          score.r <- itrtest(dat.comb, z=dat.comb$trt.new, n0)
+          # record the one with improved utility
           if (!is.na(score.l) && !is.na(score.r)) {
             if(score.l>max.score & score.r>max.score){
               if(score.l>score.r) {
@@ -144,32 +185,44 @@ partition.ITR <- function(dat, test=NULL, name="0", min.ndsz=20, n0=5, split.var
     }
   }
   # when testing data is provided, assess new treatment assignment 
-  # using testing sample and the rule caluclated from training sample
+  # using testing sample and the rule calculated from training sample
   # var is the covariates calcualted before where spliting adopts. 
   # best.cut is the cutting point.
-  # This section of the code will be used in the variable importance functions
-  if (!is.null(test)) { 
+  if (!is.null(test)) {
     n.test <- nrow(test)
     score.test <- NA
     if (!is.na(var)) {
       if (is.element(var,ctg)) {
         grp.test <- sign(is.element(test[,var], best.cut))
+      } else  {
+        if(cut[1]=="l"){
+          grp.test <- sign(test[,var] <= best.cut)
+        } else{
+          grp.test <- sign(test[,var] > best.cut)
+        }
       }
-      else  {
-        grp.test <- sign(test[,var] <= best.cut)
-      }
-      score.test <- irttest(test, z=grp.test, n0=(n0/2))
+      score.test <- itrtest(test, z=grp.test, n0=(n0/2))
       if (!is.na(score.test)){
         out$name.l <- name.l
         out$name.r <- name.r
-        out$left.test <- test[grp.test==1,  ]
-        out$right.test <- test[grp.test==0,  ]
+        if(cut[1]=="l"){
+          out$left.test <- test[grp.test==1,  ]
+          out$right.test <- test[grp.test==0,  ]
+        } else{
+          out$left.test <- test[grp.test==0,  ]
+          out$right.test <- test[grp.test==1,  ]
+        }
         if (is.element(var,ctg)) {
           out$left  <- dat[is.element(dat[,var], best.cut),]
           out$right <- dat[!is.element(dat[,var], best.cut), ]}
         else {
-          out$left  <- dat[dat[,var]<= best.cut,]
-          out$right <- dat[dat[,var]> best.cut, ]
+          if(cut[1]=='l'){
+            out$left  <- cbind(dat[dat[,var]<= best.cut,],new.trt=rep(1,n=sum(dat[,var]<= best.cut)))
+            out$right <- cbind(dat[dat[,var]> best.cut, ],new.trt=rep(0,n=sum(dat[,var]> best.cut)))
+          }else{
+            out$left  <- cbind(dat[dat[,var]<= best.cut,],new.trt=rep(0,n=sum(dat[,var]<= best.cut)))
+            out$right <- cbind(dat[dat[,var]> best.cut, ],new.trt=rep(1,n=sum(dat[,var]> best.cut)))
+          }  
         }
       } else {
         var <- NA
@@ -178,13 +231,17 @@ partition.ITR <- function(dat, test=NULL, name="0", min.ndsz=20, n0=5, split.var
         max.score <- NA
       }
       # output results from both testing and training data.
-      out$info <- data.frame(node=name, size = n, n.1=n.1, n.0=n.0, trt.effect=trt.effect,var = var, 
-                             vname=vname, cut= cut, score=ifelse(max.score==-1e10, NA, max.score),score.test, size.test=n.test)
+      if(!is.na(var)){  out$info <- data.frame(node=name, size = n, n.1=n.1, n.0=n.0, trt.effect=trt.effect,var = var, 
+                                               vname=vname, cut.1 = cut[1], cut.2 = cut[2], score=ifelse(max.score==-1e20, NA, max.score), score.test=score.test, size.test=n.test)
+      } else{
+        out$info <- data.frame(node=name, size = n, n.1=n.1, n.0=n.0, trt.effect=trt.effect, var = NA, 
+                               vname=NA, cut.1 = NA, cut.2 = NA, score=NA,score.test=NA, size.test=n.test)
+      }
     } else {
       out$info <- data.frame(node=name, size = n, n.1=n.1, n.0=n.0, trt.effect=trt.effect, var = NA, 
-                             vname=NA, cut.1= NA,cut.2=NA, score=NA,score.test=NA, size.test=n.test)
+                             vname=NA, cut.1=NA, cut.2=NA, score=NA,score.test=NA, size.test=n.test)
     }
-  }	else {
+  } else {
     # if no testing data output results from training data only.
     if (!is.na(var)) {
       out$name.l <- name.l
@@ -202,7 +259,7 @@ partition.ITR <- function(dat, test=NULL, name="0", min.ndsz=20, n0=5, split.var
         }  
       }
       out$info <- data.frame(node=name, size = n, n.1=n.1, n.0=n.0, trt.effect=trt.effect, var = var, 
-                             vname=vname, cut= cut, score=ifelse(max.score==-1e10, NA, max.score))
+                             vname=vname, cut.1= cut[1], cut.2=cut[2], score=ifelse(max.score==-1e20, NA, max.score))
     } else {
       out$info <- data.frame(node=name, size = n, n.1=n.1, n.0=n.0, trt.effect=trt.effect,var=NA, 
                              vname=NA, cut.1= NA,cut.2=NA, score=NA)
