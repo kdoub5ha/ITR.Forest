@@ -5,7 +5,8 @@
 \title{Generates partition summary based on itr value. Used inside of the grow.ITR function.}
 \usage{
 partition.ITR(dat, test = NULL, name = "0", min.ndsz = 20, n0 = 5,
-  split.var, ctg = NULL, max.depth = 15, mtry = length(split.var))
+  split.var, ctg = ctg, max.depth = 15, mtry = length(split.var),
+  temp.tree = NULL, full = NULL)
 }
 \arguments{
 \item{dat}{data set from which the partition is to be made.  Must contain outcome, binary 
@@ -23,6 +24,8 @@ in treatment group.}
 \item{max.depth}{controls the maximum depth of the tree. Defaults to 15.}
 
 \item{mtry}{sets the number of randomly selected splitting variables to be included. Defaults to number of splitting variables.}
+
+\item{max.score}{controls the minimum score required to make an additional split (internally controlled).}
 }
 \value{
 partition information based on itr value
