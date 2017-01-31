@@ -1,9 +1,9 @@
-Package: ITR.Tree
-Title: Building an ITR Tree
+Package: ITR.forest
+Title: Building an ITR-forest
 Version: 1.0.0
 Authors@R: c(person("Kevin", "Doubleday", email = "kevindoubleday@email.arizona.edu", role = c("aut", "cre")),
             person("Jin", "Zhou", role="ctb"))
-Description: The ITR.Tree package facilitates the construction of a large
+Description: The ITR.Forest package facilitates the construction of a large
     interaction tree using the value function developed by Doubleday, Zhou, and Fu.
     The functions available allow the user to simulate data from either an RCT or
     observational study, build a large interaction tree, find important interaction
