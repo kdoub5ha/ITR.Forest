@@ -10,17 +10,14 @@
 
 
 itrtest <- function(dat,z,n0){
-  #remember here that z is the new treatment assignment based on the split
-  y <- dat$y        #outcome variable
-  trt <- dat$trt    #treatment variable
-  prtx <- dat$prtx  #prob of being in treatment
-  itr <- NA         #value function
-  n <- nrow(dat)    #sample size
+  y <- dat$y
+  trt <- dat$trt
+  prtx <- dat$prtx
+  itr <- NA
+  n <- nrow(dat)
   if (length(y)!=length(z)) stop("the vector z must have the same length as data.")
   if(n > n0) {
-  #calculate itr value if sample size in the node is larger than smallest specified
-  #this is used only in the initial assessment of all patients being in treatment or control
-    itr <- mean(trt*y*z/prtx+(1-trt)*y*(1-z)/(1-prtx))
+    itr <- mean(trt*y*z/prtx+(1-trt)*y*(1-z)/(1-prtx))/mean(trt*z/prtx+(1-trt)*(1-z)/(1-prtx))
   }
   itr
 }
