@@ -1,5 +1,5 @@
 #' Finds all decendants of a particular node in a tree.  Used in the send.down.VI.ITR function. 
-#' 
+#'  
 #' @param x node 
 #' @param tree interaction tree 
 #' @return summary of decendant nodes
