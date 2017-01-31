@@ -18,9 +18,10 @@
 #' This generates a dataframe with 500 observations, X1 as the only variable interacting with 
 #' the treatment, and a signal to noise ratio of 2/2=1.
 
-rdat <- function(n=100, K =50, 
-                 beta1=2, beta2=2,
-                 sigma=1, cut1=.5, cut2=.5, depth=1)
+rdat<-function(n=100, K =50, 
+               beta1=2, beta2=2,
+               sigma=1, cut1=.5, cut2=.5, cut3=0.3, cut4=0.1, 
+               depth=1)
 {
   trt <- sample(c(0,1), n, replace=T)
   #### Generate Covariates
@@ -32,7 +33,7 @@ rdat <- function(n=100, K =50,
     mean <- 2 + 2*sign(x1<=cut2) + beta1*sign(x1<=cut1)*trt + beta2*sign(x1>cut1)*(1-trt)
     ##### Output
   }else{ 
-    mean <- 2 + 2*sign(x1<=cut2) + beta1*sign(x1>=0.3 & x3>=0.1)*trt + beta2*(1-sign(x1>=0.3 & x3>=0.1))*(1-trt)
+    mean <- 2 + 2*sign(x1<=cut2) + beta1*sign(x1>=cut3 & x3>=cut4)*trt + beta2*(1-sign(x1>=cut3 & x3>=cut4))*(1-trt)
   } 
   y <- mean + rnorm(n, mean=0, sd=sigma)
   data.frame(x1=x1, x2=x2, x3=x3, x4=x4, y=y, trt=trt,prtx=rep(0.5,n))
