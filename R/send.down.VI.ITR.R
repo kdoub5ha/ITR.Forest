@@ -75,6 +75,6 @@ send.down.VI.ITR<-function(dat.new, tre, col.y, col.trt, col.prtx, ctg=NULL, n0=
     }  
     i <- i+1
   }
-  out  <- list(tre0=tre0,score=itrtest2(dat.new, zz, n0=5))
+  out  <- list(tre0=tre0,score=itrtest(dat.new, zz, n0=5))
   return(out)
 }
