@@ -11,13 +11,11 @@
 #' @return summary of tree performance
 #' @export
 
-
-
-send.down.VI.ITR <- function(dat.new, tre, col.y, col.trt, col.prtx, ctg=NA, n0=5, revise.tree=T,depth=1)
+send.down.VI.ITR<-function(dat.new, tre, col.y, col.trt, col.prtx, ctg=NULL, n0=5, revise.tree=T,depth=1)
 {
-  #select data from bootstrap samples (coming from random forest / variable importance functions)
-  node.dat <- rep(0, nrow(dat.new))   		
-  cut.point <- as.vector(tre$cut.2)   
+  #Retrieve information from the bootstrap sample tree
+  node.dat <- rep(0, nrow(dat.new))   		# COLUMNS CAN BE ADDED TO DATA
+  cut.point <- as.vector(tre$cut.2)
   cut.direct <- as.vector(tre$cut.1)
   split.var <- as.numeric(as.vector(tre$var))
   y <- dat.new[, col.y]    
@@ -25,12 +23,11 @@ send.down.VI.ITR <- function(dat.new, tre, col.y, col.trt, col.prtx, ctg=NA, n0=
   prtx <- dat.new[,col.prtx]
   nd <- dim(tre)[1]
   
-  tre0 <- tre # bootstrap generated tree
+  tre0 <- tre # REVISED TREE
   tre0$n.test <- rep(NA, nrow(tre))
-  tre0$score.test <- rep(NA, nrow(tre)) # 
+  tre0$score.test <- rep(NA, nrow(tre)) # COLUMNS CAN BE ADDED TO TREE
   i <- 1
   zz <- rep(0,nrow(dat.new))
-  # this extracts tree information for comparison with OOB sample
   while (i <= nrow(tre0)){
     node.i <- tre0$node[i]
     in.node <- (node.dat == node.i)
@@ -68,7 +65,7 @@ send.down.VI.ITR <- function(dat.new, tre, col.y, col.trt, col.prtx, ctg=NA, n0=
         node.dat[in.node & is.element(x.split, cut1)] <- paste(l.nd, 1, sep="")    
         node.dat[in.node & !is.element(x.split, cut1)] <- paste(r.nd, 2, sep="")  	             
       }
-      t2 <- itrtest2(dat0, z, n0=n0)
+      t2 <- itrtest2(dat0, z, n0=5)
       tre0$score.test[i] <- t2
     }
     if (is.na(t2) && revise.tree) {
@@ -78,6 +75,6 @@ send.down.VI.ITR <- function(dat.new, tre, col.y, col.trt, col.prtx, ctg=NA, n0=
     }  
     i <- i+1
   }
-  out  <- list(tre0=tre0,score=itrtest2(dat.new, zz, n0=n0))
+  out  <- list(tre0=tre0,score=itrtest2(dat.new, zz, n0=5))
   return(out)
 }
