@@ -24,7 +24,7 @@
 
 
 Build.RF.ITR<-function(dat, test=FALSE, col.y, col.trt, col.prtx=col.prtx, split.var, ctg=NULL,N0=20, n0=5,  max.depth=10,ntree=500, 
-         mtry = max(floor(length(split.var)/3), 1),avoid.nul.tree=F)
+         mtry = max(floor(length(split.var)/3), 1),avoid.nul.tree=F, AIPWE=F)
 {
   out <- as.list(NULL)
   out$ID.Boots.Samples  <- as.list(1:ntree)
@@ -37,9 +37,9 @@ Build.RF.ITR<-function(dat, test=FALSE, col.y, col.trt, col.prtx=col.prtx, split
     dat.test <- dat[-unique(id.b),]
     # Generate tree based on b-th bootstrap sample
     if(test==FALSE){
-      tre.b <- grow.ITR(data=dat.b, test=NULL, min.ndsz=N0, n0=5, split.var=split.var, ctg=NULL, max.depth=15, mtry=mtry)
+      tre.b <- grow.ITR(data=dat.b, test=NULL, min.ndsz=N0, n0=5, split.var=split.var, ctg=NULL, max.depth=15, mtry=mtry, AIPWE=AIPWE)
     } else {
-      tre.b <- grow.ITR(data=dat.b, test=dat.test, min.ndsz=N0, n0=5, split.var=split.var, ctg=NULL, max.depth=15, mtry=mtry)
+      tre.b <- grow.ITR(data=dat.b, test=dat.test, min.ndsz=N0, n0=5, split.var=split.var, ctg=NULL, max.depth=15, mtry=mtry, AIPWE=AIPWE)
     } 
     if (avoid.nul.tree) {
       if (nrow(tre.b) > 1) {
