@@ -20,20 +20,20 @@
 
 
 gdataM <- function(n,depth, beta1, beta2, 
-                   cut1=0.5, cut2=0.3, cut3=0.1){
+                   cut1=0.5, cut2=0.3, cut3=0.1, K=50){
   NX  <- 4
   NPATIENT  <- n
-  covariatesX <<- matrix(round(runif(NX*NPATIENT),2),nrow=NPATIENT)
+  for (j in 1:4) {
+    assign(paste("X", j, sep=""),sample(1:K, n, replace=T)/K)
+  }
+  covariatesX <- matrix(c(X1,X2,X3,X4), nrow = NPATIENT, ncol = NX)
   expLogit  <- exp(-4+3*covariatesX[,1]+5*covariatesX[,3])
-  treatmentProbT  <- expLogit/(1+expLogit)
-  #treatmentProbT  <- 0.5
+  treatmentProbT  <- round(expLogit/(1+expLogit), 3)
   treatmentT  <- rbinom(NPATIENT,1,treatmentProbT)
-  frame<-data.frame(covariatesX, treatmentT)
-  model<-glm(treatmentT~., data=frame, family=binomial(link="logit"))
-  preds<-predict(model, frame)
-  odds<-exp(preds)
-  prtx<-round(odds/(1+odds),2)
-  
+  #fit <- glm(treatmentT~covariatesX, family = binomial(link = "logit"))
+  #preds <- predict(fit, data.frame(covariatesX))
+  #prtx <- round(exp(preds)/(1+exp(preds)),2)
+
   if(depth==1){
     subGroupIndex  <- ( covariatesX[,1] < cut1)
   }else {
@@ -49,7 +49,7 @@ gdataM <- function(n,depth, beta1, beta2,
   
   responseY  <- treatmentT*responseY1+(1-treatmentT)*responseY0
   
-  dataM  <- as.data.frame(cbind(covariatesX,responseY,treatmentT,treatmentProbT))
-  names(dataM)  <- c(paste("X",c(1:4), sep=""),"y","trt","prtx")
+  dataM  <- as.data.frame(cbind(covariatesX,responseY,treatmentT,treatmentProbT, 1:n))
+  names(dataM)  <- c(paste("X",c(1:4), sep=""),"y","trt","prtx", "id")
   dataM
 }
