@@ -8,6 +8,7 @@
 #' @param graphic indicates whether a cross validation plot is generated.  Defaults to FALSE.
 #' @param graphicname name of output graphic when graphic=TRUE.  Must be specified if graphic=TRUE and will be output to working directory.
 #' @param nfolds number of folds to be considered in the cross validation.  Defaults to 10. 
+#' @param AIPWE logical for use of augmented robust estimator
 #' @return summary of pruned branches and the associated value of the tree after pruning
 #' @export
 #' @examples
