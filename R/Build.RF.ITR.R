@@ -13,6 +13,7 @@
 #' @param mtry sets the number of randomly selected splitting variables to be included. Defaults to max of length(split.var)/3 rounded down and 1.
 #' @param ntree sets the number of trees to be generated. Defaults to 500.
 #' @param avoid.nul.tree controls if trees with no splits (null trees) are allowed. Defaults to FALSE.
+#' @param AIPWE logical for use of augmented robust estimator
 #' @return summary of randomly generated trees (summary done by tree)
 #' @export
 #' @examples
