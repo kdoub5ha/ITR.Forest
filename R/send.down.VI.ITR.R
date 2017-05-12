@@ -8,10 +8,11 @@
 #' @param col.prtx the probability of being assigned to treatment group. Required input. 
 #' @param ctg identifies the categorical input columns.  Defaults to NA.  Not available yet. 
 #' @param n0 minimum number of treatment/control observations needed in a split to call a node terminal. Defaults to 5. 
+#' @param AIPWE logical indicates use of the robust augmented estimator
 #' @return summary of tree performance
 #' @export
 
-send.down.VI.ITR<-function(dat.new, tre, col.y, col.trt, col.prtx, ctg=NULL, n0=5, revise.tree=T,depth=1)
+send.down.VI.ITR<-function(dat.new, tre, col.y, col.trt, col.prtx, ctg=NULL, n0=5, revise.tree=T,depth=1, AIPWE = AIPWE)
 {
   #Retrieve information from the bootstrap sample tree
   node.dat <- rep(0, nrow(dat.new))   		# COLUMNS CAN BE ADDED TO DATA
@@ -65,7 +66,7 @@ send.down.VI.ITR<-function(dat.new, tre, col.y, col.trt, col.prtx, ctg=NULL, n0=
         node.dat[in.node & is.element(x.split, cut1)] <- paste(l.nd, 1, sep="")    
         node.dat[in.node & !is.element(x.split, cut1)] <- paste(r.nd, 2, sep="")  	             
       }
-      t2 <- itrtest(dat0, z, n0=5)
+      t2 <- itrtest(dat0, z, n0=5, AIPWE)
       tre0$score.test[i] <- t2
     }
     if (is.na(t2) && revise.tree) {
@@ -75,6 +76,6 @@ send.down.VI.ITR<-function(dat.new, tre, col.y, col.trt, col.prtx, ctg=NULL, n0=
     }  
     i <- i+1
   }
-  out  <- list(tre0=tre0,score=itrtest(dat.new, zz, n0=5))
+  out  <- list(tre0=tre0,score=itrtest(dat.new, zz, n0=5, AIPWE))
   return(out)
 }
