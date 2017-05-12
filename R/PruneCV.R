@@ -14,7 +14,7 @@
 #' 
 
 
-PruneCV<-function(data, param, min.ndsz=20, n0=5, split.var, graphic=FALSE, nfolds=10, graphicname=NULL){
+PruneCV<-function(data, param, min.ndsz, n0, split.var, graphic=FALSE, nfolds, graphicname=NULL, AIPWE = F){
   tree<-prune.tree<-out<-NULL
   
   pb <- txtProgressBar(min = 0, max = length(param), style = 3)
@@ -29,9 +29,10 @@ PruneCV<-function(data, param, min.ndsz=20, n0=5, split.var, graphic=FALSE, nfol
       test <- data[unique(testIndexes), ]
       train <- data[-unique(testIndexes), ]
       
-      tree<-grow.ITR(data = train, test=test, split.var=split.var, min.ndsz = min.ndsz, n0=n0)
+      tree<-grow.ITR(data = train, test=test, split.var=split.var, 
+                     min.ndsz = min.ndsz, n0=n0, AIPWE = AIPWE, max.depth = 10)
       
-      prune.tree<-prune(tree, param[x], train=train, test=test)
+      prune.tree<-prune(tree, param[x], train=train, test=test, AIPWE = AIPWE)
       comb <- rbind(comb, prune.tree)
       
     }
@@ -54,12 +55,12 @@ PruneCV<-function(data, param, min.ndsz=20, n0=5, split.var, graphic=FALSE, nfol
   #plot graphic if indicated
   if((graphic)){
     postscript(file = graphicname)
-    p <- ggplot(data=out[which(out$Length>4),], aes(x=as.numeric(n.tmnl), y=log(MeanValue), group=Parameter))
-    p <- p + geom_point() + geom_line(aes(linetype=Parameter))
-    p <- p + xlab("Number of Terminal Nodes") + ylab(expression(log~V[lambda](T)))
+    p <- ggplot(data=out[which(out$Length>4 & as.numeric(out$n.tmnl)<=10),], aes(x=as.numeric(n.tmnl), y=exp(MeanValue), group=Parameter))
+    p <- p + geom_line(aes(linetype=Parameter))
+    p <- p + xlab("Number of Terminal Nodes") + ylab(expression(exp~V[lambda](T)))
     p <- p + theme(axis.title.x=element_text(size=24)) + theme(axis.title.y=element_text(size=24))
     p <- p + theme(axis.text.x=element_text(size=20)) + theme(axis.text.y=element_text(size=20))
-    p <- p + scale_x_continuous(breaks=1:max(out$n.tmnl)) + theme(legend.position=c(0.9,0.5))
+    p <- p + theme(legend.position=c(0.9,0.5)) + scale_x_continuous(breaks = seq(1,max(as.numeric(out$n.tmnl)),1)) 
     p <- p + theme(legend.title=element_text(size=18) , legend.text=element_text(size=14))
     p <- p + theme(panel.background=element_blank()) + theme(axis.line = element_line(colour = "black"))
     print(p)
