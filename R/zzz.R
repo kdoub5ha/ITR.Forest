@@ -2,6 +2,7 @@
   options(stringsAsFactors = F)   
   
   library(glmnet)
+  library(plyr)
   library(dplyr)
   library(RColorBrewer)
   library(e1071)
