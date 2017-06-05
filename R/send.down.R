@@ -6,40 +6,48 @@
 #' @return summary of tree performance
 #' @export
 
-send.down <- function(data, tre, char.var=1000)
+send.down <- function(dat.new, tre, char.var=1000, ctgs=NULL)
 {
   call <- match.call()
   out <- match.call(expand = F)
   out$tree <- out$data <- out$... <- NULL
-  dat <- cbind(data, node=0)
-  tre <- cbind(tre, n.test=NA)
+  dats <- cbind(dat.new, node=0)
+  tre.new <- cbind(tre, n.test=NA)
   cut.point <- as.vector(tre$cut.2) 
-  split.var <- as.numeric(as.vector(tre$var)) 
+  split.v <- as.numeric(as.vector(tre$var)) 
   for (i in 1:nrow(tre)){
-    in.node <- (dat$node)==(tre$node[i])
-    tre$n.test[i] <- sum(in.node)                       
-    if (!is.na(split.var[i])){
+    in.node <- (dats$node)==(tre.new$node[i])
+    tre.new$n.test[i] <- sum(in.node)                       
+    if (!is.na(split.v[i])){
       # print(cbind(i, var=tre$var[i], cut=tre$cut[i]))
-      var.split <- dat[,split.var[i]] 
+      var.split <- dats[,split.v[i]] 
       cut <- cut.point[i]
-      if (!is.element(split.var[i], char.var)) { 
-        cut1 <- as.numeric(cut)    
-        l.nd <- dat$node[in.node & var.split <= cut1] 
-        r.nd <- dat$node[in.node & var.split > cut1]
-        dat$node[in.node & var.split <= cut1] <- paste(l.nd, 1, sep="")
-        dat$node[in.node & var.split >  cut1] <- paste(r.nd, 2, sep="")  
-      }
-      else {
+      if (!is.element(split.v[i], char.var)) {
+        if(is.element(split.v[i], ctgs)){
+          cut1 <- as.numeric(strsplit(cut, split = ",")[[1]])
+          l.nd <- dats$node[in.node & is.element(var.split, cut1)]
+          r.nd <- dats$node[in.node & !is.element(var.split, cut1)]
+          dats$node[in.node & is.element(var.split, cut1)] <- paste(l.nd, 1, sep="")
+          dats$node[in.node & !is.element(var.split, cut1)] <- paste(r.nd, 2, sep="") 
+        } else{
+          cut1 <- as.numeric(cut)    
+          l.nd <- dats$node[in.node & var.split <= cut1] 
+          r.nd <- dats$node[in.node & var.split > cut1]
+          dats$node[in.node & var.split <= cut1] <- paste(l.nd, 1, sep="")
+          dats$node[in.node & var.split >  cut1] <- paste(r.nd, 2, sep="") 
+        }
+      } else {
         var.split <- as.character(var.split)
         cut1 <- unlist(strsplit(as.character(cut), split=" ")) #####################
-        l.nd <- dat$node[in.node & is.element(var.split, cut1)] 
-        r.nd <- dat$node[in.node & !is.element(var.split, cut1)]                  
-        dat$node[in.node & is.element(var.split, cut1)] <- paste(l.nd, 1, sep="")  
-        dat$node[in.node & !is.element(var.split, cut1)] <- paste(r.nd, 2, sep="")}                   
+        l.nd <- dats$node[in.node & is.element(var.split, cut1)] 
+        r.nd <- dats$node[in.node & !is.element(var.split, cut1)]                  
+        dats$node[in.node & is.element(var.split, cut1)] <- paste(l.nd, 1, sep="")  
+        dats$node[in.node & !is.element(var.split, cut1)] <- paste(r.nd, 2, sep="")
+      }                   
     }
   }
   # print(tre)
-  out$data <- dat
-  out$tree <- tre
+  out$data <- dats
+  out$tree <- tre.new
   out 
 }
