@@ -39,8 +39,6 @@ gdataM <- function(n,depth, beta1, beta2,
   }else {
     subGroupIndex  <- ( covariatesX[,1] > cut2 & covariatesX[,3] > cut3)
   }
-  
-  
   responseY1Mean  <- 1 + 2*covariatesX[,2] + 4*covariatesX[,4] + beta1*(subGroupIndex)*treatmentT
   responseY1  <- responseY1Mean  +  rnorm(NPATIENT)
   
@@ -48,7 +46,7 @@ gdataM <- function(n,depth, beta1, beta2,
   responseY0  <- responseY0Mean + rnorm(NPATIENT)
   
   responseY  <- treatmentT*responseY1+(1-treatmentT)*responseY0
-  
+
   dataM  <- as.data.frame(cbind(covariatesX,responseY,treatmentT,treatmentProbT, 1:n))
   names(dataM)  <- c(paste("X",c(1:4), sep=""),"y","trt","prtx", "id")
   dataM
