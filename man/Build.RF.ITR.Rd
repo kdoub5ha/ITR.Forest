@@ -11,7 +11,8 @@ Build.RF.ITR(dat, test = FALSE, col.y, col.trt, col.prtx = col.prtx,
 \arguments{
 \item{dat}{the data set being used to grow the random forest. Required input.}
 
-\item{test}{indicator that determines if testing data is also run with each tree in the forest.  Defaults to FALSE.}
+\item{test}{indicator that determines if testing data is also run with each tree in the forest.  In the 
+            case of the forest, the testing data is the out-of-bag sample. Defaults to FALSE.}
 
 \item{col.y}{the response variable. Required input.}
 
@@ -36,16 +37,18 @@ Build.RF.ITR(dat, test = FALSE, col.y, col.trt, col.prtx = col.prtx,
 \item{avoid.nul.tree}{controls if trees with no splits (null trees) are allowed. Defaults to FALSE.}
 }
 \value{
-summary of randomly generated trees (summary done by tree)
+Returns the trees, bootstrap samples, and model specifications used to build the forest. 
 }
 \description{
-Builds the random forest of interaction trees
+Builds the random forest of ITR trees
 }
 \examples{
-forest<-Build.RF.ITR(dat=data, col.y="y", col.trt="trt", col.prtx="prtx", 
-                     split.var=3:7)
-This builds a forest of 500 trees using the dataset called 'data' with columns
+dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)
+forest<-Build.RF.ITR(dat=dat, col.y="y", col.trt="trt", col.prtx="prtx", 
+                     split.var=1:4, ntree=100, avoid.nul.tree=T)
+This builds a forest of 500 trees using the dataset `dat` with columns
 'y', 'trt', and 'prtx' for the outcome, treatement indicator, and probability of being
-in treatment group, respectively.  The splitting variables are found in columns 3-7.
+in treatment group, respectively.  The splitting variables are found in columns 1-4,
+number of trees is set at 100, and we choose to avoid null trees in this forest.
 }
 
