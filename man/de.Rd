@@ -2,7 +2,7 @@
 % Please edit documentation in R/de.R
 \name{de}
 \alias{de}
-\title{Finds all decendants of a particular node in a tree.  Used in the send.down.VI.ITR function.}
+\title{Finds all decendants of a particular node in a tree.}
 \usage{
 de(x, tree)
 }
@@ -15,7 +15,8 @@ de(x, tree)
 Returns all the descendant nodes from the node `x`
 }
 \description{
-Finds all decendants of a particular node in a tree.  Used in the send.down.VI.ITR function.
+This function identifies all nodes in a given tree structure
+which are descendants of the input node.
 }
 \examples{
 set.seed(10) 

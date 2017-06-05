@@ -2,8 +2,7 @@
 % Please edit documentation in R/Variable.Importance.ITR.R
 \name{Variable.Importance.ITR}
 \alias{Variable.Importance.ITR}
-\title{Calcuates variable importance measures for a random forest object.  Input must be an object
- from the random forest function Build.RF.ITR.}
+\title{Calcuates variable importance measures for a random forest object.}
 \usage{
 Variable.Importance.ITR(RF.fit, n0 = 5, N0 = 20, sort = T, details = F,
   truncate.zeros = T, depth = 1, AIPWE = F)
@@ -27,8 +26,11 @@ Variable.Importance.ITR(RF.fit, n0 = 5, N0 = 20, sort = T, details = F,
 Returns order variable importance measure calculated for each splitting variable.
 }
 \description{
-Calcuates variable importance measures for a random forest object.  Input must be an object
- from the random forest function Build.RF.ITR.
+This function accepts a forest object from the `Build.RF.ITR` function and estimates the importance of each
+predictor. This is accomplished by considering each tree in the forest, obtaining the out-of-bag value for each predictor in that tree, 
+obtaining the permuted out-of-bag value for each predictor in the tree, and comparing the values. A larger discrepancy between 
+the original value and permuted value indicates the predictor is more important in predicting treatment. The function
+returns the variables in order of importance along with the importance measure, scaled to be out of 1.
 }
 \examples{
 dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)

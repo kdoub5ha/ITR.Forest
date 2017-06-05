@@ -2,7 +2,7 @@
 % Please edit documentation in R/prune.R
 \name{prune}
 \alias{prune}
-\title{Prunes a bootstrap tree with penalty (a) for additional splitting}
+\title{Prunes a tree for a given penalty value}
 \usage{
 prune(tre, a, train, test = NULL, AIPWE = F)
 }
@@ -21,7 +21,10 @@ prune(tre, a, train, test = NULL, AIPWE = F)
 summary of pruned branches and the associated value of the tree after pruning
 }
 \description{
-Prunes a bootstrap tree with penalty (a) for additional splitting
+The `prune` function allows the user to specify a value of the penalty for a given tree. 
+This function uses the "weakest link" criteria in order to evaluate the order in which branches are pruned
+and gives the penalized value along with the unpenalized value. If testing data are provided for validation, 
+then the penalized and unpenalized values from the testing data run down the tree structure are also provided.
 }
 \examples{
 

@@ -12,7 +12,9 @@
 \item{new.dat}{data for which predictions are desired}
 }
 \description{
-Used to make treatment prediction for a single tree or random forest
+Used to make treatment prediction for a single tree or random forest. If the 
+input is a forest, then the proportion of trees voting for treatment (`trt=1`) is returned. 
+If the input is a single tree, then the function returns the vote (treatment or control) from the tree.
 }
 \examples{
 dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)

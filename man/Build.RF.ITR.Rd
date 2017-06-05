@@ -40,7 +40,10 @@ Build.RF.ITR(dat, test = FALSE, col.y, col.trt, col.prtx = col.prtx,
 summary of randomly generated trees (summary done by tree)
 }
 \description{
-Builds the random forest of interaction trees
+This function constructs a random forest of ITR trees using either the IPWE or AIPWE
+method. A forest object can be inputed into the `predict.ITR()` function along with data in order to 
+obtain treatment predictions. A forest object can also be given to the `Variable.Importance.ITR()` 
+function to estimate predictor importance.
 }
 \examples{
 dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)

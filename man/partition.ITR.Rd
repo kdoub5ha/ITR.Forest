@@ -2,7 +2,7 @@
 % Please edit documentation in R/partition.ITR.R
 \name{partition.ITR}
 \alias{partition.ITR}
-\title{Generates partition summary based on itr value. Used inside of the grow.ITR function.}
+\title{Generates partition summary based on itr value.}
 \usage{
 partition.ITR(dat, test = NULL, name = "0", min.ndsz = 20, n0 = 5,
   split.var, ctg = ctg, max.depth = 15, mtry = length(split.var),
@@ -35,5 +35,6 @@ in treatment group.}
 partition information based on itr value
 }
 \description{
-Generates partition summary based on itr value. Used inside of the grow.ITR function.
+The partitioning function is used inside of the tree growing functions.  It 
+selects the best split among a set of predictors based on the IPWE or AIPWE value.
 }

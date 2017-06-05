@@ -35,7 +35,7 @@ the direction the treatment is sent `cut.1` ("r" for right child node, and "l" f
 and the estimated value function `score`.
 }
 \description{
-Grows a large interaction tree
+This function grows an interaction tree using either the IPWE or AIPWE method (AIPWE=F, T).
 }
 \examples{
 dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)

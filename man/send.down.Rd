@@ -2,8 +2,7 @@
 % Please edit documentation in R/send.down.R
 \name{send.down}
 \alias{send.down}
-\title{Sends testing data down a tree to assess the performance of the tree. This is used inside
-the variable importance function.}
+\title{Sends testing data down a tree to obtain terminal node assignments}
 \usage{
 send.down(dat.new, tre, char.var = 1000, ctgs = NULL)
 }
@@ -16,8 +15,4 @@ send.down(dat.new, tre, char.var = 1000, ctgs = NULL)
 }
 \value{
 summary of node assignments for `dat.new` run down tree `tre`
-}
-\description{
-Sends testing data down a tree to assess the performance of the tree. This is used inside
-the variable importance function.
 }

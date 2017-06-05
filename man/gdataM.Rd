@@ -2,11 +2,7 @@
 % Please edit documentation in R/gdataM.R
 \name{gdataM}
 \alias{gdataM}
-\title{Simulates data from an observational study according to the following model:
-1 + 2*X2 + 4*X4 + beta1*trt*subgrp + beta2*(1-trt)*(1-subgrp) + N(0,1)
-where subgrp is the group of interacting variable(s).
-If depth=1, then subgrp=(X1 < 0.5)
-If depth!=1 then subgrp=(X1>0.3 & X3>0.1)}
+\title{Simulates data from an EMR design with defined subgroup.}
 \usage{
 gdataM(n, depth, beta1, beta2, cut1 = 0.5, cut2 = 0.3, cut3 = 0.1,
   K = 50)

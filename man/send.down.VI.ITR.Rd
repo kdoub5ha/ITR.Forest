@@ -2,8 +2,7 @@
 % Please edit documentation in R/send.down.VI.ITR.R
 \name{send.down.VI.ITR}
 \alias{send.down.VI.ITR}
-\title{Sends testing data down a tree to assess the performance of the tree. This is used inside
-the variable importance function.}
+\title{Sends testing data and permuted testing data down a bootstrap tree from a forest object.}
 \usage{
 send.down.VI.ITR(dat.new, tre, col.y, col.trt, col.prtx, ctg = NULL,
   n0 = n0, N0 = N0, revise.tree = T, depth = 1, AIPWE = AIPWE)
@@ -27,8 +26,4 @@ send.down.VI.ITR(dat.new, tre, col.y, col.trt, col.prtx, ctg = NULL,
 }
 \value{
 summary of tree performance
-}
-\description{
-Sends testing data down a tree to assess the performance of the tree. This is used inside
-the variable importance function.
 }

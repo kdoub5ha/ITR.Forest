@@ -2,8 +2,7 @@
 % Please edit documentation in R/itrtest.R
 \name{itrtest}
 \alias{itrtest}
-\title{Value function used for initial treatment heterogeneity assessment.  This is used 
-inside the tree growing function.}
+\title{Value function used for treatment assignment value calculation.}
 \usage{
 itrtest(dat, z, n0, aug)
 }
@@ -20,8 +19,7 @@ itrtest(dat, z, n0, aug)
 itr value from a defined split.
 }
 \description{
-Value function used for initial treatment heterogeneity assessment.  This is used 
-inside the tree growing function.
+This function is used inside the tree growing functions.
 }
 \examples{
 dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)

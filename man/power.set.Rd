@@ -2,7 +2,7 @@
 % Please edit documentation in R/power.set.R
 \name{power.set}
 \alias{power.set}
-\title{Used for categorical predictor subsetting in the tree growing function.}
+\title{Categorical predictor subsetting in the tree growing function.}
 \usage{
 power.set(x)
 }
@@ -11,7 +11,4 @@ power.set(x)
 }
 \value{
 Returns a list of the subsets of the predictor to be considered.
-}
-\description{
-Used for categorical predictor subsetting in the tree growing function.
 }
