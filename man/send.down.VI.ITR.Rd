@@ -5,8 +5,8 @@
 \title{Sends testing data down a tree to assess the performance of the tree. This is used inside
 the variable importance function.}
 \usage{
-send.down.VI.ITR(dat.new, tre, col.y, col.trt, col.prtx, ctg = NULL, n0 = 5,
-  revise.tree = T, depth = 1)
+send.down.VI.ITR(dat.new, tre, col.y, col.trt, col.prtx, ctg = NULL,
+  n0 = n0, N0 = N0, revise.tree = T, depth = 1, AIPWE = AIPWE)
 }
 \arguments{
 \item{dat.new}{the new data set being sent down the tree. Required input.}
@@ -21,6 +21,8 @@ send.down.VI.ITR(dat.new, tre, col.y, col.trt, col.prtx, ctg = NULL, n0 = 5,
 
 \item{n0}{minimum number of treatment/control observations needed in a split to call a node terminal. Defaults to 5.}
 
+\item{AIPWE}{indicator for AIPWE estimation.}
+
 \item{tree}{constructed tree.}
 }
 \value{
@@ -30,4 +32,3 @@ summary of tree performance
 Sends testing data down a tree to assess the performance of the tree. This is used inside
 the variable importance function.
 }
-

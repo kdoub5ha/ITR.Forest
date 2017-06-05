@@ -4,7 +4,7 @@
 \alias{prune}
 \title{Prunes a bootstrap tree with penalty (a) for additional splitting}
 \usage{
-prune(tre, a, train, test = NULL)
+prune(tre, a, train, test = NULL, AIPWE = F)
 }
 \arguments{
 \item{tre}{sets the tree to be pruned}
@@ -14,6 +14,8 @@ prune(tre, a, train, test = NULL)
 \item{train}{the training data used to create the tree}
 
 \item{test}{the testing data to be used.  Defaults to NULL.}
+
+\item{AIPWE}{indicator for AIPWE estimation.}
 }
 \value{
 summary of pruned branches and the associated value of the tree after pruning
@@ -24,4 +26,3 @@ Prunes a bootstrap tree with penalty (a) for additional splitting
 \examples{
 
 }
-

@@ -33,4 +33,3 @@ Performs k-fold cross validation for selection optimal tuning parameter lambda.
 \examples{
 
 }
-

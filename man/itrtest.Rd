@@ -5,7 +5,7 @@
 \title{Value function used for initial treatment heterogeneity assessment.  This is used 
 inside the tree growing function.}
 \usage{
-itrtest(dat, z, n0)
+itrtest(dat, z, n0, aug)
 }
 \arguments{
 \item{dat}{dataset being assessed}
@@ -13,6 +13,8 @@ itrtest(dat, z, n0)
 \item{z}{new (alternative) treatment assignment in the splitting procedure.}
 
 \item{n0}{minimum number of observations needed to make a split.}
+
+\item{aug}{logical indicator for AIPWE estimation (TRUE) or IPWE estimation (FALSE).}
 }
 \value{
 itr value from a defined split.
@@ -21,4 +23,12 @@ itr value from a defined split.
 Value function used for initial treatment heterogeneity assessment.  This is used 
 inside the tree growing function.
 }
-
+\examples{
+dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)
+#Assign every other patient to treatment
+z <- rep(c(0,1), nrow(dat)/2)
+IPWE value
+itrtest(dat, z, 5, F)
+AIPWE value
+itrtest(dat, z, 5, T)
+}

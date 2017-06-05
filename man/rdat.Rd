@@ -2,10 +2,7 @@
 % Please edit documentation in R/rdat.R
 \name{rdat}
 \alias{rdat}
-\title{Simulates data from an RCT according to the following model:
-2 + 2*sign(x1<cut2) + beta1*trt*subgrp + beta2*(1-trt)*subgrp + N(0,sigma)
-If depth=1, then subgrp=(x1<=cut1)
-If depth!=1 then subgrp=(x1>=0.3 & x3>=0.1)}
+\title{Simulates data from an RCT design}
 \usage{
 rdat(n = 100, K = 50, beta1 = 2, beta2 = 2, sigma = 1, cut1 = 0.5,
   cut2 = 0.5, cut3 = 0.3, cut4 = 0.1, depth = 1)
@@ -26,7 +23,7 @@ covariates X1 and X3 both interact with treatment effect (one-way interactions).
 \item{cut1/cut2}{controls where the cutpoints are to define subgroups.}
 }
 \value{
-dataframe containing y (outcome), x1-x4 (covariates), trt (treatment), prtx (probability of being in treatment group)
+dataframe containing y (outcome), x1-x4 (covariates), trt (treatment), prtx (probability of being in treatment group), and ID variable
 }
 \description{
 Simulates data from an RCT according to the following model:
@@ -35,8 +32,8 @@ If depth=1, then subgrp=(x1<=cut1)
 If depth!=1 then subgrp=(x1>=0.3 & x3>=0.1)
 }
 \examples{
+
 data<-rdat(n=500)
 This generates a dataframe with 500 observations, X1 as the only variable interacting with 
 the treatment, and a signal to noise ratio of 2/2=1.
 }
-

@@ -5,7 +5,7 @@
 \title{Grows a large interaction tree}
 \usage{
 grow.ITR(data, test = NULL, min.ndsz = 20, n0 = 5, split.var,
-  ctg = NULL, max.depth = 15, mtry = length(split.var))
+  ctg = NULL, max.depth = 15, mtry = length(split.var), AIPWE = F)
 }
 \arguments{
 \item{data}{data set from which the tree is to be grown.  Must contain outcome, binary 
@@ -27,13 +27,18 @@ in treatment group.}
 \item{N0}{minimum number of observations needed to call a node terminal.  Defaults to 20.}
 }
 \value{
-summary of single interaction tree
+`grow.ITR` returns the summary of a single interaction tree. Each `node` begins with "0" indicating the root node, 
+followed by a "1" or "2" indicating the less than (or left) child node or greater than (or right) child node. 
+Additionally, the number of observations `size`, number treated `n.1`, number on control `n.0`, and treatment effect `trt.effect`
+summaries are provided.  The splitting information includes the column of the chosen splitting variable `var`, the variable name 'vname',
+the direction the treatment is sent `cut.1` ("r" for right child node, and "l" for left), the chosen split value `cut.2`, 
+and the estimated value function `score`.
 }
 \description{
 Grows a large interaction tree
 }
 \examples{
-tree<-grow.ITR(data=rctdata, split.var=3:7)
-Generates tree using rctdata with potential splitting variables located in columns 3-7.
+dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)
+tree<-grow.ITR(data=dat, split.var=1:4)
+Generates tree using rctdata with potential splitting variables located in columns 1-4.
 }
-

@@ -12,9 +12,16 @@ de(x, tree)
 \item{tree}{interaction tree}
 }
 \value{
-summary of decendant nodes
+Returns all the descendant nodes from the node `x`
 }
 \description{
 Finds all decendants of a particular node in a tree.  Used in the send.down.VI.ITR function.
 }
+\examples{
+set.seed(10) 
+dat<- gdataM(1000,2,3,1)
+tre <- grow.ITR(dat, split.var = 1:4)
+de('01', tree = tre)
+"011"  "012"  "0121" "0122"
 
+}

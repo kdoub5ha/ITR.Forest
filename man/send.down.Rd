@@ -5,18 +5,19 @@
 \title{Sends testing data down a tree to assess the performance of the tree. This is used inside
 the variable importance function.}
 \usage{
-send.down(data, tre, char.var = 1000)
+send.down(dat.new, tre, char.var = 1000, ctgs = NULL)
 }
 \arguments{
 \item{tre}{tree object from grow.ITR().  Required input.}
 
+\item{ctgs}{categorical variables, entered as columns in `dat.new`}
+
 \item{dat}{data to be run down the tree.  Required input.}
 }
 \value{
-summary of tree performance
+summary of node assignments for `dat.new` run down tree `tre`
 }
 \description{
 Sends testing data down a tree to assess the performance of the tree. This is used inside
 the variable importance function.
 }
-

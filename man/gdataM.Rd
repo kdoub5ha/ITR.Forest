@@ -8,7 +8,8 @@ where subgrp is the group of interacting variable(s).
 If depth=1, then subgrp=(X1 < 0.5)
 If depth!=1 then subgrp=(X1>0.3 & X3>0.1)}
 \usage{
-gdataM(n, depth, beta1, beta2, cut1 = 0.5, cut2 = 0.3, cut3 = 0.1)
+gdataM(n, depth, beta1, beta2, cut1 = 0.5, cut2 = 0.3, cut3 = 0.1,
+  K = 50)
 }
 \arguments{
 \item{n}{size of the dataset to be generate.  Required input.}
@@ -28,7 +29,7 @@ covariates X1 and X3 both interact with treatment effect (one-way interactions).
 \item{cut3}{cutpoint for depth=2 on covariate X3.}
 }
 \value{
-dataframe containing y (outcome), X1-X4 (covariates), trt (treatment), prtx (probability of being in treatment group)
+dataframe containing y (outcome), X1-X4 (covariates), trt (treatment), prtx (probability of being in treatment group), and ID variable
 }
 \description{
 Simulates data from an observational study according to the following model:
@@ -42,4 +43,3 @@ data<-gdataM(n=500, depth=1, beta1=1, beta2=2)
 This generates a dataframe with 500 observations, X1 as the only variable interacting with 
 the treatment, and a signal to noise ratio of 1/2.
 }
-
