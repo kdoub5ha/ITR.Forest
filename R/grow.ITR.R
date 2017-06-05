@@ -50,7 +50,7 @@ grow.ITR<-function(data, test=NULL, min.ndsz=20, n0=5, split.var, ctg=NULL,
         if(name[i]=="0"){
           max.score <- max(itrtest(data, z=rep(0,nrow(data)), n0, AIPWE),itrtest(data, z=rep(1,nrow(data)), n0, AIPWE))
         }else{
-          send<-send.down(data, temp.tree)
+          send<-send.down(data, temp.tree, ctgs = ctg)
           node<-substr(send$data$node,1,nchar(send$data$node)-1)
           direction<-substr(send$data$node,nchar(send$data$node),nchar(send$data$node))
           trt.dir <- temp.tree[match(node,temp.tree$node),]$cut.1
@@ -65,7 +65,7 @@ grow.ITR<-function(data, test=NULL, min.ndsz=20, n0=5, split.var, ctg=NULL,
           #if(length(list.nd)>1) dat<-dat[,-which(colnames(dat)=="new.trt")]
           send<-dat.rest<-node<-direction<-trt.dir<-trt.pred<-NULL
           dat.rest <- data[!is.element(data$id, list.nd[[i]]$id),]
-          send<-send.down(dat.rest, temp.tree)
+          send<-send.down(dat.rest, temp.tree, ctgs = ctg)
           node<-substr(send$data$node,1,nchar(send$data$node)-1)
           direction<-substr(send$data$node,nchar(send$data$node),nchar(send$data$node))
           trt.dir <- temp.tree[match(node,temp.tree$node),]$cut.1
