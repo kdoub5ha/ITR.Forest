@@ -12,7 +12,7 @@
 #' @return summary of tree performance
 #' @export
 
-send.down.VI.ITR<-function(dat.new, tre, col.y, col.trt, col.prtx, ctg=NULL, n0=5, revise.tree=T,depth=1, AIPWE = AIPWE)
+send.down.VI.ITR<-function(dat.new, tre, col.y, col.trt, col.prtx, ctg=NULL, n0=n0, N0=N0, revise.tree=T,depth=1, AIPWE = AIPWE)
 {
   #Retrieve information from the bootstrap sample tree
   node.dat <- rep(0, nrow(dat.new))   		# COLUMNS CAN BE ADDED TO DATA
@@ -54,19 +54,19 @@ send.down.VI.ITR<-function(dat.new, tre, col.y, col.trt, col.prtx, ctg=NULL, n0=
           if(cut.d=="l") {
             zz[in.node & x.split <= cut1] <- 1
           } else {
-            zz[in.node & x.split > cut1] <- 1
+            zz[in.node & x.split > cut1] <- 0
           }
         }
       }
       else {
-        cut1 <- unlist(strsplit(as.character(cut), split=" "))  
+        cut1 <- unlist(strsplit(as.character(cut), split=","))  
         l.nd <- node.dat[in.node & is.element(x.split, cut1)] 
         r.nd <- node.dat[in.node & !is.element(x.split, cut1)]   
         z <- sign(is.element(x.split[in.node], cut1))  
         node.dat[in.node & is.element(x.split, cut1)] <- paste(l.nd, 1, sep="")    
         node.dat[in.node & !is.element(x.split, cut1)] <- paste(r.nd, 2, sep="")  	             
       }
-      t2 <- itrtest(dat0, z, n0=5, AIPWE)
+      t2 <- itrtest(dat0, z, n0=n0, AIPWE)
       tre0$score.test[i] <- t2
     }
     if (is.na(t2) && revise.tree) {
@@ -76,6 +76,15 @@ send.down.VI.ITR<-function(dat.new, tre, col.y, col.trt, col.prtx, ctg=NULL, n0=
     }  
     i <- i+1
   }
-  out  <- list(tre0=tre0,score=itrtest(dat.new, zz, n0=5, AIPWE))
+  
+  node<-substr(node.dat,1,nchar(node.dat)-1)
+  direction<-substr(node.dat,nchar(node.dat),nchar(node.dat))
+  trt.dir<-tre0[match(node, tre0$node),]$cut.1
+  
+  trt.pred<-ifelse(trt.dir=="r" & direction=="1",0,
+                   ifelse(trt.dir=="r" & direction=="2",1,
+                          ifelse(trt.dir=="l" & direction=="1",1,0)))
+  
+  out  <- list(tre0=tre0,score=itrtest(dat.new, trt.pred, n0=n0, AIPWE))
   return(out)
 }
