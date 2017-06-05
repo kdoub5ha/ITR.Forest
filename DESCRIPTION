@@ -1,25 +1,17 @@
 Package: ITR.Forest
-Title: Builds ITR Trees and Random Forests
+Title: Generation of Individualized Treatment Rule via Random Forest
 Version: 1.0.0
 Authors@R: c(person("Kevin", "Doubleday", email = "kevindoubleday@email.arizona.edu", role = c("aut", "cre")),
             person("Jin", "Zhou", role="ctb"))
-Description: The ITR.forest package facilitates the construction of a large
-    interaction tree using IPWE or AIPWE estimation of the reward function.
+Description: The ITR.Tree package facilitates the construction of a large
+    interaction tree using the value function developed by Doubleday, Zhou, and Fu.
     The functions available allow the user to simulate data from either an RCT or
     observational study, build a large interaction tree, find important interaction
-    variables, and calculate the variable importance measures for all variables included
-    in the tree construction. Currently, only continuous outcomes are
-    allowed in the construction of the tree.  Both continuous and categorical covariates may 
-    be entered as potential splitting variables. 
+    variables, and plot the variable importance measures for all variables included
+    in the tree construction. Currently, only continuous baseline variables are
+    allowed in the construction of the tree.
 Depends:
     R (>= 3.2.2)
-Imports:
-    glmnet, 
-    dplyr, 
-    RColorBrewer,
-    e1071,
-    DTRlearn, 
-    ggplot2
 License: No license
 LazyData: true
-RoxygenNote: 5.0.1.9000
+RoxygenNote: 6.0.1.9000
