@@ -1,9 +1,9 @@
-#' Sends testing data down a tree to assess the performance of the tree. This is used inside
-#' the variable importance and pruning functions. 
+#' Sends data down a tree structure to obtain node assignments.  
 #' 
-#' @param dat data to be run down the tree.  Required input. 
+#' @param dat.new data to be run down the tree.  Required input. 
 #' @param tre tree object from grow.ITR().  Required input.
-#' @return summary of tree performance
+#' @param ctgs categorical predictor columns.
+#' @return Returns the input dataset with node assignments. 
 #' @export
 
 send.down <- function(dat.new, tre, char.var=1000, ctgs=NULL)
