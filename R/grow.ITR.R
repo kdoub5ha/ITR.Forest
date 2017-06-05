@@ -1,9 +1,11 @@
-#' Grows a large interaction tree
+#' @title Grows a large interaction tree
+#' 
+#' @description This function grows an interaction tree using either the IPWE or AIPWE method (AIPWE=F, T). 
+#' 
 #' 
 #' @param data data set from which the tree is to be grown.  Must contain outcome, binary 
 #'  treatment indicator, columns of splitting covariates, and column of probability of being
 #'  in treatment group.
-#' @param test provided testing data.  Defaults to NULL. 
 #' @param split.var columns of potential spliting variables. Required input.
 #' @param min.ndsz minimum number of observations required to call a node terminal. Defaults to 20.
 #' @param ctg identifies the categorical input columns.  Defaults to NULL.  Not available yet. 
@@ -11,12 +13,19 @@
 #' @param n0 minimum number of treatment/control observations needed in a split to call a node terminal. Defaults to 5. 
 #' @param max.depth controls the maximum depth of the tree. Defaults to 15. 
 #' @param mtry sets the number of randomly selected splitting variables to be included. Defaults to number of splitting variables.
-#' @param AIPWE logical indicating use of augmented robust estimator 
-#' @return summary of single interaction tree 
+#' @return `grow.ITR` returns the summary of a single interaction tree. Each `node` begins with "0" indicating the root node, 
+#' followed by a "1" or "2" indicating the less than (or left) child node or greater than (or right) child node. 
+#' Additionally, the number of observations `size`, number treated `n.1`, number on control `n.0`, and treatment effect `trt.effect`
+#' summaries are provided.  The splitting information includes the column of the chosen splitting variable `var`, the variable name 'vname',
+#' the direction the treatment is sent `cut.1` ("r" for right child node, and "l" for left), the chosen split value `cut.2`, 
+#' and the estimated value function `score`.
+#'  
 #' @export
 #' @examples
-#' tree<-grow.ITR(data=rctdata, split.var=3:7)
-#' Generates tree using rctdata with potential splitting variables located in columns 3-7.
+#' dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)
+#' tree<-grow.ITR(data=dat, split.var=1:4)
+#' Generates tree using rctdata with potential splitting variables located in columns 1-4.
+
 
 grow.ITR<-function(data, test=NULL, min.ndsz=20, n0=5, split.var, ctg=NULL, 
                    max.depth=15, mtry=length(split.var), AIPWE=F)

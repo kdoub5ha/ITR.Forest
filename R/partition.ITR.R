@@ -1,20 +1,24 @@
-#' Generates partition summary based on itr value. Used inside of the grow.ITR function.
+#' @title Generates partition summary based on itr value. 
+#' 
+#' @description The partitioning function is used inside of the tree growing functions.  It 
+#' selects the best split among a set of predictors based on the IPWE or AIPWE value. 
 #' 
 #' @param dat data set from which the partition is to be made.  Must contain outcome, binary 
 #'  treatment indicator, columns of splitting covariates, and column of probability of being
 #'  in treatment group.
-#' @param test provided testing data.  Defaults to NULL. 
 #' @param split.var columns of potential spliting variables. Required input.
-#' @param name the name of the parent node which is being partitioned. 
 #' @param min.ndsz minimum number of observations required to call a node terminal. Defaults to 20.
 #' @param ctg identifies the categorical input columns.  Defaults to NULL.  Not available yet. 
 #' @param n0 minimum number of treatment/control observations needed in a split to call a node terminal. Defaults to 5. 
 #' @param max.depth controls the maximum depth of the tree. Defaults to 15. 
-#' @param mtry sets the number of randomly selected splitting variables to be included. Defaults to number of splitting variables
-#' @param dat.rest keeps track of data not included in the current splitting node.
-#' @param max.score used to prevent splits which do not increase the value of the previously completed tree structure
+#' @param mtry sets the number of randomly selected splitting variables to be included. Defaults to number of splitting variables.
+#' @param max.score controls the minimum score required to make an additional split (internally controlled).
+#' @param dat.rest data outside the current node being split
+#' @param AIPWE indicator for AIPWE estimation
 #' @return partition information based on itr value 
 #' @export
+
+
 
 partition.ITR<-function(dat, test=NULL, name="0", min.ndsz=20, n0=5, split.var, ctg=ctg, 
                         max.depth=15, mtry=length(split.var), dat.rest=NULL, max.score=NULL, AIPWE = AIPWE)
@@ -230,4 +234,3 @@ partition.ITR<-function(dat, test=NULL, name="0", min.ndsz=20, n0=5, split.var, 
   }
   out 
 }
-

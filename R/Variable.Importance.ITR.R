@@ -1,14 +1,25 @@
-#' Calcuates variable importance measures for a random forest object.  Input must be an object
-#'  from the random forest function Build.RF.ITR. 
+#' @title Calcuates variable importance measures for a random forest object.  
+#' 
+#' @description This function accepts a forest object from the `Build.RF.ITR` function and estimates the importance of each
+#' predictor. This is accomplished by considering each tree in the forest, obtaining the out-of-bag value for each predictor in that tree, 
+#' obtaining the permuted out-of-bag value for each predictor in the tree, and comparing the values. A larger discrepancy between 
+#' the original value and permuted value indicates the predictor is more important in predicting treatment. The function
+#' returns the variables in order of importance along with the importance measure, scaled to be out of 1.  
 #' 
 #' @param RF.fit forest object from Build.RF.ITR. Required input. 
 #' @param n0 minimum number of treatment/control observations needed in a split to call a node terminal. Defaults to 2. 
 #' @param sort sort the variable importance measure? Defaults to TRUE. 
 #' @param n0 minimum number of treatment/control observations needed in a split to call a node terminal. Defaults to 5. 
-#' @param details print details. Defaults to FALSE.
+#' @param details print details of each tree as the function progresses. Defaults to FALSE.
 #' @param truncate.zeros sets variable importances less than 0 to 0. Defaults to TRUE.
-#' @param AIPWE logical for use of augmented robust estimator
-#' @return summary of tree performance
+#' @param AIPWE indicator for AIPWE estimation.
+#' @return Returns order variable importance measure calculated for each splitting variable. 
+#' @examples 
+#' dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)
+#' #Build a forest with 100 trees
+#' forest <- Build.RF.ITR(dat, col.y="y", col.trt="trt", col.prtx="prtx", split.var=1:4, ntree=100)
+#' #Calculate variable importance measures
+#' Variable.Importance.ITR(forest)
 #' @export
 
 

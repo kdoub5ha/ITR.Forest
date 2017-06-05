@@ -1,5 +1,4 @@
-#' Sends testing data down a tree to assess the performance of the tree. This is used inside
-#' the variable importance function. 
+#' @title Sends testing data and permuted testing data down a bootstrap tree from a forest object. 
 #' 
 #' @param dat.new the new data set being sent down the tree. Required input. 
 #' @param tree constructed tree.
@@ -8,9 +7,11 @@
 #' @param col.prtx the probability of being assigned to treatment group. Required input. 
 #' @param ctg identifies the categorical input columns.  Defaults to NA.  Not available yet. 
 #' @param n0 minimum number of treatment/control observations needed in a split to call a node terminal. Defaults to 5. 
-#' @param AIPWE logical indicates use of the robust augmented estimator
+#' @param AIPWE indicator for AIPWE estimation.
 #' @return summary of tree performance
 #' @export
+
+
 
 send.down.VI.ITR<-function(dat.new, tre, col.y, col.trt, col.prtx, ctg=NULL, n0=n0, N0=N0, revise.tree=T,depth=1, AIPWE = AIPWE)
 {

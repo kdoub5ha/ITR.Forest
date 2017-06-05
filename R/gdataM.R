@@ -1,4 +1,6 @@
-#' Simulates data from an observational study according to the following model:
+#' @title Simulates data from an EMR design with defined subgroup.
+#' 
+#' @description Simulates data from an observational study according to the following model:
 #' 1 + 2*X2 + 4*X4 + beta1*trt*subgrp + beta2*(1-trt)*(1-subgrp) + N(0,1)
 #' where subgrp is the group of interacting variable(s).
 #' If depth=1, then subgrp=(X1 < 0.5)
@@ -10,8 +12,10 @@
 #'  covariates X1 and X3 both interact with treatment effect (one-way interactions). Required input.
 #' @param beta1 controls the strength of the treatment effect. Required input. 
 #' @param beta2 controls the strength of the noise. Required input. 
-#' @param cut1/cut2/cut3 controls the cutpoints for defining subgroups. 
-#' @return dataframe containing y (outcome), X1-X4 (covariates), trt (treatment), prtx (probability of being in treatment group)
+#' @param cut1 cutpoint for depth=1 on covariate X1. 
+#' @param cut2 cutpoint for depth=2 on covariate X1. 
+#' @param cut3 cutpoint for depth=2 on covariate X3. 
+#' @return dataframe containing y (outcome), X1-X4 (covariates), trt (treatment), prtx (probability of being in treatment group), and ID variable
 #' @export
 #' @examples
 #' data<-gdataM(n=500, depth=1, beta1=1, beta2=2)
@@ -33,7 +37,7 @@ gdataM <- function(n,depth, beta1, beta2,
   #fit <- glm(treatmentT~covariatesX, family = binomial(link = "logit"))
   #preds <- predict(fit, data.frame(covariatesX))
   #prtx <- round(exp(preds)/(1+exp(preds)),2)
-
+  
   if(depth==1){
     subGroupIndex  <- ( covariatesX[,1] < cut1)
   }else {
@@ -46,7 +50,7 @@ gdataM <- function(n,depth, beta1, beta2,
   responseY0  <- responseY0Mean + rnorm(NPATIENT)
   
   responseY  <- treatmentT*responseY1+(1-treatmentT)*responseY0
-
+  
   dataM  <- as.data.frame(cbind(covariatesX,responseY,treatmentT,treatmentProbT, 1:n))
   names(dataM)  <- c(paste("X",c(1:4), sep=""),"y","trt","prtx", "id")
   dataM

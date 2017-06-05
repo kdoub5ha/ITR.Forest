@@ -1,14 +1,20 @@
-#' Prunes a bootstrap tree with penalty (a) for additional splitting
+#' @title Prunes a tree for a given penalty value
+#' 
+#' @description The `prune` function allows the user to specify a value of the penalty for a given tree. 
+#' This function uses the "weakest link" criteria in order to evaluate the order in which branches are pruned
+#' and gives the penalized value along with the unpenalized value. If testing data are provided for validation, 
+#' then the penalized and unpenalized values from the testing data run down the tree structure are also provided.  
 #' 
 #' @param tre sets the tree to be pruned 
 #' @param a sets the value of the splitting penalty
 #' @param train the training data used to create the tree
 #' @param test the testing data to be used.  Defaults to NULL.
-#' @param AIPWE logical indicates use of the robust augmented estimator
+#' @param AIPWE indicator for AIPWE estimation.
 #' @return summary of pruned branches and the associated value of the tree after pruning
 #' @export
 #' @examples
 #' 
+
 
 prune <- function(tre, a, train, test=NULL, AIPWE = F){
   if(is.null(dim(tre))) stop("No Need to Prune Further.")
@@ -16,7 +22,7 @@ prune <- function(tre, a, train, test=NULL, AIPWE = F){
   n.tmnl <- sum(is.na(tre$var))
   subtree <- 1
   while (n.tmnl > 1 ) {
-   #internal keeps track of all splits which are not terminal <NA> for score value
+    #internal keeps track of all splits which are not terminal <NA> for score value
     internal <- tre$node[!is.na(tre$cut.1)]
     l <- length(internal)
     #r.value is the vector of mean score values across all splits
@@ -59,27 +65,27 @@ prune <- function(tre, a, train, test=NULL, AIPWE = F){
     
     V <- itrtest(dat = train, z=trt.pred, n0=2, AIPWE)
     V.a <- V - a*sum(!is.na(tre$score))
-
-    if(!is.null(test)){
-    #Calculate value for the training set
-    send<-send.down(dat.new = test, tre = tre)
-    node<-substr(send$data$node,1,nchar(send$data$node)-1)
-    direction<-substr(send$data$node,nchar(send$data$node),nchar(send$data$node))
-    trt.dir<-tre[match(node,tre$node),]$cut.1
     
-    trt.pred<-ifelse(trt.dir=="r" & direction=="1",0,
-                     ifelse(trt.dir=="r" & direction=="2",1,
-                     ifelse(trt.dir=="l" & direction=="1",1,0)))
+    if(!is.null(test)){
+      #Calculate value for the training set
+      send<-send.down(dat.new = test, tre = tre)
+      node<-substr(send$data$node,1,nchar(send$data$node)-1)
+      direction<-substr(send$data$node,nchar(send$data$node),nchar(send$data$node))
+      trt.dir<-tre[match(node,tre$node),]$cut.1
       
-    V.test <- itrtest(dat = test, z=trt.pred, n0=-1, AIPWE)
-    Va.test <- V.test - a*sum(!is.na(tre$score))
+      trt.pred<-ifelse(trt.dir=="r" & direction=="1",0,
+                       ifelse(trt.dir=="r" & direction=="2",1,
+                              ifelse(trt.dir=="l" & direction=="1",1,0)))
+      
+      V.test <- itrtest(dat = test, z=trt.pred, n0=-1, AIPWE)
+      Va.test <- V.test - a*sum(!is.na(tre$score))
     }
     
     # Calculate value for testing data
     if(is.null(test)) {result <- rbind(result, cbind(subtree=subtree, node.rm=nod.rm, size.tree=nrow(tre), 
-                                               size.tmnl=nrow(tre)-l, alpha=alpha, V=V, V.a=V.a, V.test=NA, Va.test=NA))}
+                                                     size.tmnl=nrow(tre)-l, alpha=alpha, V=V, V.a=V.a, V.test=NA, Va.test=NA))}
     if(!is.null(test)) {result <- rbind(result, cbind(subtree=subtree, node.rm=nod.rm, size.tree=nrow(tre), 
-                                              size.tmnl=nrow(tre)-l, alpha=alpha, V=V, V.a=V.a, V.test=V.test, Va.test=Va.test))}
+                                                      size.tmnl=nrow(tre)-l, alpha=alpha, V=V, V.a=V.a, V.test=V.test, Va.test=Va.test))}
     
     if(length(nod.rm)>1){
       for(k in 1:length(nod.rm)){
@@ -100,11 +106,11 @@ prune <- function(tre, a, train, test=NULL, AIPWE = F){
   # HANDLE THE NULL TREE WITH THE ROOT NODE ONLY
   if(!is.null(test)){
     result <- rbind(result, cbind(subtree=subtree, node.rm='NA', size.tree=nrow(tre), 
-                                size.tmnl=1, alpha=9999, 
-                                V=max(itrtest(train, rep(1,nrow(train)), 5, AIPWE), itrtest(train, rep(0, nrow(train)), 5, AIPWE)), 
-                                V.a=max(itrtest(train, rep(1,nrow(train)), 5, AIPWE), itrtest(train, rep(0, nrow(train)), 5, AIPWE)), 
-                                V.test=max(itrtest(test, rep(1,nrow(test)), 5, AIPWE), itrtest(test, rep(0, nrow(test)), 5, AIPWE)), 
-                                Va.test=max(itrtest(test, rep(1,nrow(test)), 5, AIPWE), itrtest(test, rep(0, nrow(test)), 5, AIPWE))))
+                                  size.tmnl=1, alpha=9999, 
+                                  V=max(itrtest(train, rep(1,nrow(train)), 5, AIPWE), itrtest(train, rep(0, nrow(train)), 5, AIPWE)), 
+                                  V.a=max(itrtest(train, rep(1,nrow(train)), 5, AIPWE), itrtest(train, rep(0, nrow(train)), 5, AIPWE)), 
+                                  V.test=max(itrtest(test, rep(1,nrow(test)), 5, AIPWE), itrtest(test, rep(0, nrow(test)), 5, AIPWE)), 
+                                  Va.test=max(itrtest(test, rep(1,nrow(test)), 5, AIPWE), itrtest(test, rep(0, nrow(test)), 5, AIPWE))))
   }else{
     result <- rbind(result, cbind(subtree=subtree, node.rm='NA', size.tree=nrow(tre), 
                                   size.tmnl=1, alpha=9999, 

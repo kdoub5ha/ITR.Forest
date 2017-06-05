@@ -1,8 +1,19 @@
-#' Finds all decendants of a particular node in a tree.  Used in the send.down.VI.ITR function. 
-#'  
+#' @title Finds all decendants of a particular node in a tree.   
+#' 
+#' @description This function identifies all nodes in a given tree structure
+#' which are descendants of the input node. 
+#' 
 #' @param x node 
 #' @param tree interaction tree 
-#' @return summary of decendant nodes
+#' @return Returns all the descendant nodes from the node `x`
+#' @examples
+#' set.seed(10) 
+#' dat<- gdataM(1000,2,3,1)
+#' tre <- grow.ITR(dat, split.var = 1:4)
+#' de('01', tree = tre)
+#' "011"  "012"  "0121" "0122"
+
+#' 
 #' @export
 
 

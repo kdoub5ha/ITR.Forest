@@ -1,6 +1,9 @@
-#' Treatment Prediction Function
+#' @title Treatment Prediction Function
 #'
-#' Used to make treatment prediction for a single tree or random forest
+#' @description Used to make treatment prediction for a single tree or random forest. If the 
+#' input is a forest, then the proportion of trees voting for treatment (`trt=1`) is returned. 
+#' If the input is a single tree, then the function returns the vote (treatment or control) from the tree. 
+#' 
 #' @param input tree or forest object from `grow.ITR` or `Build.RF.ITR`.
 #' @param new.dat data for which predictions are desired
 #' @export

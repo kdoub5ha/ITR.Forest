@@ -1,21 +1,20 @@
-#' Performs k-fold cross validation for choosing correctly sized tree. 
+#' Performs k-fold cross validation for selection optimal tuning parameter lambda. 
 #' 
-#' @param data data set used to create trees.  
-#' @param param vector of pruning parameters to be considered.  
-#' @param min.ndsz minimum number of obervations allowed in a terminal node.  Defaults to 20. 
-#' @param n0 minimum number of observations from each treatment group allowed in a terminal node.  Defaults to 5.
-#' @param split.var specifies columns of splitting variable in the input data set.
-#' @param graphic indicates whether a cross validation plot is generated.  Defaults to FALSE.
-#' @param graphicname name of output graphic when graphic=TRUE.  Must be specified if graphic=TRUE and will be output to working directory.
-#' @param nfolds number of folds to be considered in the cross validation.  Defaults to 10. 
-#' @param AIPWE logical for use of augmented robust estimator
+#' @param data input data 
+#' @param param vector of pruning parameter values to be considered
+#' @param min.ndsz sets the minimal number of observations allowed in terminal nodes. Defaults to 20. 
+#' @param n0 sets the minimum number of observations from each treatment group to be in each child node.  Defaults to 5. 
+#' @param split.var specifies the columns of splitting variables in the input data. 
+#' @param nfolds defaults to 10.
+#' @param graphic logical indicator for whether CV graphic should be generated.  Defaults to FALSE.
+#' @param graphicname filename of the CV graphic.  Must be specified if graphic=TRUE.  Defaults to FALSE.  
 #' @return summary of pruned branches and the associated value of the tree after pruning
 #' @export
 #' @examples
 #' 
 
 
-PruneCV<-function(data, param, min.ndsz, n0, split.var, graphic=FALSE, nfolds, graphicname=NULL, AIPWE = F){
+PruneCV<-function(data, param, min.ndsz=20, n0=5, split.var, nfolds=10, graphic=FALSE, graphicname=NULL){
   tree<-prune.tree<-out<-NULL
   
   pb <- txtProgressBar(min = 0, max = length(param), style = 3)
@@ -30,10 +29,9 @@ PruneCV<-function(data, param, min.ndsz, n0, split.var, graphic=FALSE, nfolds, g
       test <- data[unique(testIndexes), ]
       train <- data[-unique(testIndexes), ]
       
-      tree<-grow.ITR(data = train, test=test, split.var=split.var, 
-                     min.ndsz = min.ndsz, n0=n0, AIPWE = AIPWE, max.depth = 10)
+      tree<-grow.ITR(data = train, test=test, split.var=split.var, min.ndsz = min.ndsz, n0=n0)
       
-      prune.tree<-prune(tree, param[x], train=train, test=test, AIPWE = AIPWE)
+      prune.tree<-prune(tree, param[x], train=train, test=test)
       comb <- rbind(comb, prune.tree)
       
     }
@@ -55,13 +53,14 @@ PruneCV<-function(data, param, min.ndsz, n0, split.var, graphic=FALSE, nfolds, g
   names(out) <- c("n.tmnl", "MeanValue", "SDValue","Length", "Parameter")
   #plot graphic if indicated
   if((graphic)){
+    if(is.null(graphicname)) stop("Must specify name for output graphic")
     postscript(file = graphicname)
-    p <- ggplot(data=out[which(out$Length>4 & as.numeric(out$n.tmnl)<=10),], aes(x=as.numeric(n.tmnl), y=exp(MeanValue), group=Parameter))
-    p <- p + geom_line(aes(linetype=Parameter))
-    p <- p + xlab("Number of Terminal Nodes") + ylab(expression(exp~V[lambda](T)))
+    p <- ggplot(data=out[which(out$Length>4),], aes(x=as.numeric(n.tmnl), y=log(MeanValue), group=Parameter))
+    p <- p + geom_point() + geom_line(aes(linetype=Parameter))
+    p <- p + xlab("Number of Terminal Nodes") + ylab(expression(log~V[lambda](T)))
     p <- p + theme(axis.title.x=element_text(size=24)) + theme(axis.title.y=element_text(size=24))
     p <- p + theme(axis.text.x=element_text(size=20)) + theme(axis.text.y=element_text(size=20))
-    p <- p + theme(legend.position=c(0.9,0.5)) + scale_x_continuous(breaks = seq(1,max(as.numeric(out$n.tmnl)),1)) 
+    p <- p + scale_x_continuous(breaks=1:max(out$n.tmnl)) + theme(legend.position=c(0.9,0.5))
     p <- p + theme(legend.title=element_text(size=18) , legend.text=element_text(size=14))
     p <- p + theme(panel.background=element_blank()) + theme(axis.line = element_line(colour = "black"))
     print(p)

@@ -1,10 +1,12 @@
-#' Sends data down a tree structure to obtain node assignments.  
+#' @title Sends testing data down a tree to obtain terminal node assignments 
 #' 
-#' @param dat.new data to be run down the tree.  Required input. 
+#' @param dat data to be run down the tree.  Required input. 
 #' @param tre tree object from grow.ITR().  Required input.
-#' @param ctgs categorical predictor columns.
-#' @return Returns the input dataset with node assignments. 
+#' @param ctgs categorical variables, entered as columns in `dat.new`
+#' @return summary of node assignments for `dat.new` run down tree `tre`
 #' @export
+
+
 
 send.down <- function(dat.new, tre, char.var=1000, ctgs=NULL)
 {
@@ -24,7 +26,7 @@ send.down <- function(dat.new, tre, char.var=1000, ctgs=NULL)
       cut <- cut.point[i]
       if (!is.element(split.v[i], char.var)) {
         if(is.element(split.v[i], ctgs)){
-          cut1 <- as.character(strsplit(cut, split = ",")[[1]])
+          cut1 <- as.numeric(strsplit(cut, split = ",")[[1]])
           l.nd <- dats$node[in.node & is.element(var.split, cut1)]
           r.nd <- dats$node[in.node & !is.element(var.split, cut1)]
           dats$node[in.node & is.element(var.split, cut1)] <- paste(l.nd, 1, sep="")
