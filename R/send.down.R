@@ -24,7 +24,7 @@ send.down <- function(dat.new, tre, char.var=1000, ctgs=NULL)
       cut <- cut.point[i]
       if (!is.element(split.v[i], char.var)) {
         if(is.element(split.v[i], ctgs)){
-          cut1 <- as.numeric(strsplit(cut, split = ",")[[1]])
+          cut1 <- as.character(strsplit(cut, split = ",")[[1]])
           l.nd <- dats$node[in.node & is.element(var.split, cut1)]
           r.nd <- dats$node[in.node & !is.element(var.split, cut1)]
           dats$node[in.node & is.element(var.split, cut1)] <- paste(l.nd, 1, sep="")
