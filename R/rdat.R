@@ -34,7 +34,7 @@ rdat<-function(n=100, K =50,
     ##### Output
   }else{ 
     mean <- 2 + 2*sign(x2<cut2) + beta1*sign(x1>cut3 & x3>cut4)*trt + beta2*(1-sign(x1>cut3 & x3>cut4))*(1-trt)
-  } 
+  }
   y <- mean + rnorm(n, mean=0, sd=sigma)
   data.frame(x1=x1, x2=x2, x3=x3, x4=x4, y=y, id=1:n, trt=trt,prtx=rep(0.5,n))
 }
