@@ -38,9 +38,9 @@ Build.RF.ITR<-function(dat, test=FALSE, col.y, col.trt, col.prtx=col.prtx, split
     dat.test <- dat[-unique(id.b),]
     # Generate tree based on b-th bootstrap sample
     if(test==FALSE){
-      tre.b <- grow.ITR(data=dat.b, test=NULL, min.ndsz=N0, n0=5, split.var=split.var, ctg=NULL, max.depth=15, mtry=mtry, AIPWE=AIPWE)
+      tre.b <- grow.ITR(data=dat.b, test=NULL, min.ndsz=N0, n0=n0, split.var=split.var, ctg=ctg, max.depth=max.depth, mtry=mtry, AIPWE=AIPWE)
     } else {
-      tre.b <- grow.ITR(data=dat.b, test=dat.test, min.ndsz=N0, n0=5, split.var=split.var, ctg=NULL, max.depth=15, mtry=mtry, AIPWE=AIPWE)
+      tre.b <- grow.ITR(data=dat.b, test=dat.test, min.ndsz=N0, n0=n0, split.var=split.var, ctg=ctg, max.depth=max.depth, mtry=mtry, AIPWE=AIPWE)
     } 
     if (avoid.nul.tree) {
       if (nrow(tre.b) > 1) {
