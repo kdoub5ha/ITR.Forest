@@ -85,6 +85,7 @@ partition.ITR<-function(dat, test=NULL, name="0", min.ndsz=20, n0=5, split.var, 
         }
         # zcut are the values for all possible cuts 
         for(j in zcut) {
+          
           score <- NA
           if (is.element(i,ctg)){
             grp.l <- sign(is.element(x, j))
@@ -98,46 +99,48 @@ partition.ITR<-function(dat, test=NULL, name="0", min.ndsz=20, n0=5, split.var, 
             grp.r <- sign(x > j)
             cut1.r <- cbind("r",as.character(j))
           }
-
-          # use itr rule to calcuate measure of splitting
-          #n.1 <- sum(grp.l==1)
-          #n.0 <- n-n.1
-          if(name=="0") score.l <- itrtest(dat.comb, z=grp.l, n0, AIPWE)
-          if(name!="0") score.l <- itrtest(dat.comb, z=c(dat.rest$trt.new, grp.l), n0, AIPWE)
-          #n.1 <- sum(grp.r==1)
-          #n.0 <- n-n.1
           
-          if(name=="0") score.r <- itrtest(dat.comb, z=1-grp.l, n0, AIPWE)
-          if(name!="0") score.r <- itrtest(dat.comb, z=c(dat.rest$trt.new, 1-grp.l), n0, AIPWE)
-          # record the one with improved utility
-          if (!is.na(score.l) && !is.na(score.r)) {
-            if(score.l>max.score & score.r>max.score){
-              if(score.l>score.r) {
+          if(min(sum(grp.l), sum(grp.r)) >= min.ndsz & min(sum(trt*grp.l), sum((1-trt)*grp.l), sum((1-trt)*grp.r), sum(trt*grp.r)) >= n0){
+            # use itr rule to calcuate measure of splitting
+            #n.1 <- sum(grp.l==1)
+            #n.0 <- n-n.1
+            if(name=="0") score.l <- itrtest(dat.comb, z=grp.l, n0, AIPWE)
+            if(name!="0") score.l <- itrtest(dat.comb, z=c(dat.rest$trt.new, grp.l), n0, AIPWE)
+            #n.1 <- sum(grp.r==1)
+            #n.0 <- n-n.1
+            
+            if(name=="0") score.r <- itrtest(dat.comb, z=1-grp.l, n0, AIPWE)
+            if(name!="0") score.r <- itrtest(dat.comb, z=c(dat.rest$trt.new, 1-grp.l), n0, AIPWE)
+            # record the one with improved utility
+            if (!is.na(score.l) && !is.na(score.r)) {
+              if(score.l>max.score & score.r>max.score){
+                if(score.l>score.r) {
+                  max.score <- score.l
+                  var <- i
+                  vname <- v.name
+                  cut <- cut1.l
+                  best.cut<-j
+                }else{
+                  max.score <- score.r
+                  var <- i
+                  vname <- v.name
+                  cut <- cut1.r
+                  best.cut<-j
+                }
+                
+              }else if(score.l>max.score & score.r<max.score){
                 max.score <- score.l
                 var <- i
                 vname <- v.name
                 cut <- cut1.l
                 best.cut<-j
-              }else{
+              }else if(score.l<max.score & score.r>max.score){
                 max.score <- score.r
                 var <- i
                 vname <- v.name
                 cut <- cut1.r
                 best.cut<-j
               }
-              
-            }else if(score.l>max.score & score.r<max.score){
-              max.score <- score.l
-              var <- i
-              vname <- v.name
-              cut <- cut1.l
-              best.cut<-j
-            }else if(score.l<max.score & score.r>max.score){
-              max.score <- score.r
-              var <- i
-              vname <- v.name
-              cut <- cut1.r
-              best.cut<-j
             }
           }
         }
@@ -161,7 +164,7 @@ partition.ITR<-function(dat, test=NULL, name="0", min.ndsz=20, n0=5, split.var, 
           grp.test <- sign(test[,var] > best.cut)
         }
       }
-      score.test <- itrtest(test, z=grp.test, n0=(n0/2), AIPWE)
+      score.test <- s.itrtest(test, z=grp.test, n0=(n0/2))
       if (!is.na(score.test)){
         out$name.l <- name.l
         out$name.r <- name.r
@@ -208,8 +211,8 @@ partition.ITR<-function(dat, test=NULL, name="0", min.ndsz=20, n0=5, split.var, 
       out$name.r <- name.r
       if (is.element(var,ctg)) {                                                                               
         out$left  <- dat[is.element(dat[,var], best.cut),]
-        out$right <- dat[!is.element(dat[,var], best.cut), ]}
-      else {
+        out$right <- dat[!is.element(dat[,var], best.cut), ]
+      } else {
         if(cut[1]=='l'){
           out$left  <- cbind(dat[dat[,var]<= best.cut,],new.trt=rep(1,n=sum(dat[,var]<= best.cut)))
           out$right <- cbind(dat[dat[,var]> best.cut, ],new.trt=rep(0,n=sum(dat[,var]> best.cut)))
@@ -219,7 +222,7 @@ partition.ITR<-function(dat, test=NULL, name="0", min.ndsz=20, n0=5, split.var, 
         }  
       }
       out$info <- data.frame(node=name, size = n, n.1=n.1, n.0=n.0, trt.effect=trt.effect, var = var, 
-                             vname=vname, cut.1= cut[1], cut.2=cut[2], score=ifelse(max.score==1e-20, NA, max.score))
+                             vname=vname, cut.1 = unique(cut[,1]), cut.2 = paste(cut[,2], collapse = ','), score=ifelse(max.score==-1e20, NA, max.score))
     } else {
       out$info <- data.frame(node=name, size = n, n.1=n.1, n.0=n.0, trt.effect=trt.effect,var=NA, 
                              vname=NA, cut.1= NA,cut.2=NA, score=NA)
