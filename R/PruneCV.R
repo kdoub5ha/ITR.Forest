@@ -1,3 +1,4 @@
+#' This function is outdated and it is recommended that users use treeCV instead.
 #' Performs k-fold cross validation for selection optimal tuning parameter lambda. 
 #' 
 #' @param data input data 

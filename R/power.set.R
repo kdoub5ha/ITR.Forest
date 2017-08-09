@@ -1,7 +1,7 @@
 #' @title Categorical predictor subsetting in the tree growing function. 
 #' 
 #' @param x a categorical predictor. 
-#' @return Returns a list of the subsets of the predictor to be considered. 
+#' @return List of unique permutations of predictor `x` 
 #' @export
 
 power.set <- function(x) {

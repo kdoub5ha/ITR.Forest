@@ -15,7 +15,7 @@
 #' @param cut1 cutpoint for depth=1 on covariate X1. 
 #' @param cut2 cutpoint for depth=2 on covariate X1. 
 #' @param cut3 cutpoint for depth=2 on covariate X3. 
-#' @return dataframe containing y (outcome), X1-X4 (covariates), trt (treatment), prtx (probability of being in treatment group), and ID variable
+#' @return data frame containing y (outcome), X1-X4 (covariates), trt (treatment), prtx (probability of being in treatment group), and ID variable
 #' @export
 #' @examples
 #' data<-gdataM(n=500, depth=1, beta1=1, beta2=2)

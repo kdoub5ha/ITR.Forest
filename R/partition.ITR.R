@@ -15,7 +15,7 @@
 #' @param max.score controls the minimum score required to make an additional split (internally controlled).
 #' @param dat.rest data outside the current node being split
 #' @param AIPWE indicator for AIPWE estimation
-#' @return partition information based on itr value 
+#' @return summary of the best split for a given data frame. 
 #' @export
 
 
@@ -168,7 +168,7 @@ partition.ITR<-function(dat, test=NULL, name="0", min.ndsz=20, n0=5, split.var, 
           grp.test <- sign(test[,var] > best.cut)
         }
       }
-      score.test <- s.itrtest(test, z=grp.test, n0=(n0/2))
+      score.test <- itrtest(test, z=grp.test, n0=n0, aug = AIPWE)
       if (!is.na(score.test)){
         out$name.l <- name.l
         out$name.r <- name.r

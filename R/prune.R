@@ -10,13 +10,18 @@
 #' @param train the training data used to create the tree
 #' @param test the testing data to be used.  Defaults to NULL.
 #' @param AIPWE indicator for AIPWE estimation.
-#' @return summary of pruned branches and the associated value of the tree after pruning
+#' @return summary of pruned branches and the associated value of the tree after pruning. 
+#' @return \item{result}{contains columns: `node.rm` which is the weakest link at each
+#' iteration of the pruning algorithm; `size.tree` and `n.tmnl` give number of total nodes and
+#' terminal nodes in each subtree; `alpha` is the weakest link scoring criteria; `V` and `V.test`
+#' are the overall value of the tree for the training and tesing samples; `V.a` and `Va.test`
+#' give the penalized value for the training and testing samples.}
 #' @export
 #' @examples
 #' 
 
 
-prune <- function(tre, a, train, test=NULL, AIPWE = F){
+prune <- function(tre, a, train, test=NULL, AIPWE = F, n0=5){
   if(is.null(dim(tre))) stop("No Need to Prune Further.")
   result <- NULL
   n.tmnl <- sum(is.na(tre$var))
@@ -31,21 +36,16 @@ prune <- function(tre, a, train, test=NULL, AIPWE = F){
       #branch keeps track of all splits (terminal or not)
       #branch is a single path which can be followed down a given tree
       sub.tree <- tre[!is.element(tre$node,de(internal[j], tree=tre)),]
-      if(!is.null(test)) sub.tree[sub.tree$node==internal[j],][6:11] <- NA
-      if(is.null(test)) sub.tree[sub.tree$node==internal[j],][6:10] <- NA
-      
-      send<-send.down(dat.new = train, tre = sub.tree)
-      node<-substr(send$data$node,1,nchar(send$data$node)-1)
-      direction<-substr(send$data$node,nchar(send$data$node),nchar(send$data$node))
-      trt.dir<-sub.tree[match(node, sub.tree$node),]$cut.1
-      
-      trt.pred<-ifelse(trt.dir=="r" & direction=="1",0,
-                       ifelse(trt.dir=="r" & direction=="2",1,
-                              ifelse(trt.dir=="l" & direction=="1",1,0)))
-      
-      
-      score <- itrtest(dat = train, z=trt.pred, n0=2, AIPWE)
-      
+      if(nrow(sub.tree)>1){
+        if(!is.null(test)) sub.tree[sub.tree$node==internal[j],][6:11] <- NA
+        if(is.null(test)) sub.tree[sub.tree$node==internal[j],][6:10] <- NA
+        
+        trt.pred <- predict.ITR(sub.tree, train)$trt.pred
+        
+        score <- itrtest(dat = train, z=trt.pred, n0=n0, AIPWE)
+      }else{
+        score <- max(itrtest(train, rep(0,nrow(train)), 0, AIPWE), itrtest(train, rep(1,nrow(train)), 0, AIPWE))
+      }
       #r.value is a penalized mean value score across all internal nodes
       r.value[j] <- score #dim(branch)[1] - nchar(internal[j]) + score[1]/1000
     } 
@@ -53,30 +53,14 @@ prune <- function(tre, a, train, test=NULL, AIPWE = F){
     alpha <-max(r.value, na.rm = T)
     nod.rm <- internal[r.value==alpha]
     # if (length(nod.rm)>1) print("Multiple Nodes will be pruned. Check!")
-    send<-send.down(dat.new = train, tre = tre)
-    node<-substr(send$data$node,1,nchar(send$data$node)-1)
-    direction<-substr(send$data$node,nchar(send$data$node),nchar(send$data$node))
-    trt.dir<-tre[match(node,tre$node),]$cut.1
+    trt.pred <- predict.ITR(tre, train)$trt.pred
     
-    trt.pred<-ifelse(trt.dir=="r" & direction=="1",0,
-                     ifelse(trt.dir=="r" & direction=="2",1,
-                            ifelse(trt.dir=="l" & direction=="1",1,0)))
-    
-    
-    V <- itrtest(dat = train, z=trt.pred, n0=2, AIPWE)
+    V <- itrtest(dat = train, z=trt.pred, n0=n0, AIPWE)
     V.a <- V - a*sum(!is.na(tre$score))
     
     if(!is.null(test)){
-      #Calculate value for the training set
-      send<-send.down(dat.new = test, tre = tre)
-      node<-substr(send$data$node,1,nchar(send$data$node)-1)
-      direction<-substr(send$data$node,nchar(send$data$node),nchar(send$data$node))
-      trt.dir<-tre[match(node,tre$node),]$cut.1
-      
-      trt.pred<-ifelse(trt.dir=="r" & direction=="1",0,
-                       ifelse(trt.dir=="r" & direction=="2",1,
-                              ifelse(trt.dir=="l" & direction=="1",1,0)))
-      
+      # Calculate value for the training set
+      trt.pred <- predict.ITR(tre, test)$trt.pred
       V.test <- itrtest(dat = test, z=trt.pred, n0=-1, AIPWE)
       Va.test <- V.test - a*sum(!is.na(tre$score))
     }

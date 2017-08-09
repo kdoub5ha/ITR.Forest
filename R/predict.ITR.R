@@ -6,6 +6,15 @@
 #' 
 #' @param input tree or forest object from `grow.ITR` or `Build.RF.ITR`.
 #' @param new.dat data for which predictions are desired
+#' @return A summary list of the following elements:
+#' @return \item{SummaryTreat}{proportion of trees voting for treatment (trt=1). 
+#' If input is a single tree then SummaryTreat is a single number. 
+#' If input is a forest then SummaryTreat is a vector equal to the length of the number of trees.}
+#' @return \item{trt.pred}{vector of treatment assignments {0, 1} based on the tree vote (single tree) or majority of tree votes (forest). This vector has length equal to the number of rows in `new.dat`.}
+#' @return \item{n.trees}{number of tree in `input`}
+#' @return \item{tree.votes}{matrix of votes for each tree for each subject in `new.dat`. Rows correspond to trees in `input` and columns correspond to subjects in `new.dat`.}
+#' @return \item{data}{input data frame `new.dat`}
+#' @return \item{NA.trees}{number of trees returning no votes. In a forest, this is the number of null trees.}
 #' @export
 #' @examples
 #' dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)
@@ -40,11 +49,14 @@ predict.ITR <- function(input, new.dat){
                        ifelse(trt.dir=="r" & direction=="2",1,
                               ifelse(trt.dir=="l" & direction=="1",1,0)))
     }else{
-      trt.pred <- NA
+      if(is.null(dim(input))) trt.pred <- rep(NA, n)
+      if(!is.null(dim(input))) trt.pred <- NA
     }
     result <- rbind(result, trt.pred) 
   }
   out$SummaryTreat <- apply(result, 2, FUN = mean, na.rm=T)
+  if(is.null(dim(input))) out$trt.pred <- ifelse(out$SummaryTreat<0.5, 0, 1)
+  if(!is.null(dim(input))) out$trt.pred <- out$SummaryTreat
   out$n.trees <- n.trees
   out$tree.votes <- result
   out$data <- new.dat

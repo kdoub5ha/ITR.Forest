@@ -18,16 +18,19 @@
 #' @param mtry sets the number of randomly selected splitting variables to be included. Defaults to max of length(split.var)/3 rounded down and 1.
 #' @param ntree sets the number of trees to be generated. Defaults to 500.
 #' @param avoid.nul.tree controls if trees with no splits (null trees) are allowed. Defaults to FALSE.
-#' @return summary of randomly generated trees (summary done by tree)
+#' @return A list of characteristics of the forest.
+#' @return \item{ID.Boots.Samples}{list of bootstrap sample IDs}
+#' @return \item{TREES}{list of trees}
+#' @return \item{Model.Specification}{information about the input parameters of the forest}
 #' @export
 #' @examples
 #' dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)
 #' forest<-Build.RF.ITR(dat=dat, col.y="y", col.trt="trt", col.prtx="prtx", 
 #'                      split.var=1:4, ntree=100, avoid.nul.tree=T)
-#' This builds a forest of 500 trees using the dataset called 'dat' with columns
+#' This builds a forest of 100 trees using the dataset called 'dat' with columns
 #' 'y', 'trt', and 'prtx' for the outcome, treatement indicator, and probability of being
 #' in treatment group, respectively.  The splitting variables are found in columns 1-4, 
-#' 100 trees are generated, and we chose to avoid null trees.
+#' and we chose to avoid null trees.
 
 
 Build.RF.ITR<-function(dat, test=FALSE, col.y, col.trt, col.prtx=col.prtx, split.var, ctg=NULL,N0=20, n0=5,  max.depth=10,ntree=500, 

@@ -11,8 +11,8 @@
 #' @param beta1 controls the strength of the treatment effect. Defaults to 2. 
 #' @param beta2 controls the strength of the noise. Defaults to 2. 
 #' @param sigma controls standard deviation of random variation.  Defaults to 1. 
-#' @param cut1/cut2 controls where the cutpoints are to define subgroups. 
-#' @return dataframe containing y (outcome), x1-x4 (covariates), trt (treatment), prtx (probability of being in treatment group), and ID variable
+#' @param cut1-cut4 controls where the cutpoints are to define subgroups. 
+#' @return data frame containing y (outcome), x1-x4 (covariates), trt (treatment), prtx (probability of being in treatment group), and ID variable
 #' @export
 #' @examples
 #' 

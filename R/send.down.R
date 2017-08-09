@@ -3,7 +3,8 @@
 #' @param dat data to be run down the tree.  Required input. 
 #' @param tre tree object from grow.ITR().  Required input.
 #' @param ctgs categorical variables, entered as columns in `dat.new`
-#' @return summary of node assignments for `dat.new` run down tree `tre`
+#' @return \item{data}{input data with extra column of node assignments}
+#' @return \item{tree}{input tree with extra column for number of observations in each node}
 #' @export
 
 

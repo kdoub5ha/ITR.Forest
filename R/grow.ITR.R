@@ -13,7 +13,7 @@
 #' @param n0 minimum number of treatment/control observations needed in a split to call a node terminal. Defaults to 5. 
 #' @param max.depth controls the maximum depth of the tree. Defaults to 15. 
 #' @param mtry sets the number of randomly selected splitting variables to be included. Defaults to number of splitting variables.
-#' @return `grow.ITR` returns the summary of a single interaction tree. Each `node` begins with "0" indicating the root node, 
+#' @return Summary of a single interaction tree. Each `node` begins with "0" indicating the root node, 
 #' followed by a "1" or "2" indicating the less than (or left) child node or greater than (or right) child node. 
 #' Additionally, the number of observations `size`, number treated `n.1`, number on control `n.0`, and treatment effect `trt.effect`
 #' summaries are provided.  The splitting information includes the column of the chosen splitting variable `var`, the variable name 'vname',
@@ -23,8 +23,8 @@
 #' @export
 #' @examples
 #' dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)
-#' tree<-grow.ITR(data=dat, split.var=1:4)
-#' Generates tree using rctdata with potential splitting variables located in columns 1-4.
+#' tree < -grow.ITR(data=dat, split.var=1:4)
+#' Generates tree using simualated EMR data with splitting variables located in columns 1-4.
 
 
 grow.ITR<-function(data, test=NULL, min.ndsz=20, n0=5, split.var, ctg=NULL, 
@@ -71,18 +71,8 @@ grow.ITR<-function(data, test=NULL, min.ndsz=20, n0=5, split.var, ctg=NULL,
           max.score <- itrtest(dat = data, z=trt.pred, n0, AIPWE)
           
           #Obtain treatments for those not included in the node
-          #if(length(list.nd)>1) dat<-dat[,-which(colnames(dat)=="new.trt")]
-          send<-dat.rest<-node<-direction<-trt.dir<-trt.pred<-NULL
           dat.rest <- data[!is.element(data$id, list.nd[[i]]$id),]
-          send<-send.down(dat.rest, temp.tree, ctgs = ctg)
-          node<-substr(send$data$node,1,nchar(send$data$node)-1)
-          direction<-substr(send$data$node,nchar(send$data$node),nchar(send$data$node))
-          trt.dir <- temp.tree[match(node,temp.tree$node),]$cut.1
-          
-          trt.pred<-ifelse(trt.dir=="r" & direction=="1",0,
-                           ifelse(trt.dir=="r" & direction=="2",1,
-                                  ifelse(trt.dir=="l" & direction=="1",1,0)))
-          dat.rest$trt.new<-trt.pred
+          dat.rest$trt.new <- trt.pred[!is.element(data$id, list.nd[[i]]$id)]
         }
         
         # Determine best split across all covariates
@@ -120,7 +110,7 @@ grow.ITR<-function(data, test=NULL, min.ndsz=20, n0=5, split.var, ctg=NULL,
     for(p in 1:nrow(out)) {out$score.test[p]<-ifelse(is.na(out$var[p]),NA,out$score.test[p])}
   }
   if(!is.null(test)){
-    pruned<-prune(tre = out, a=0, train=data, test=test)
+    pruned<-prune(tre = out, a=0, train=data, test=test, AIPWE = AIPWE)
     out$score.test <- as.numeric(pruned$Va.test[match(out$node, pruned$node.rm)])
   }
   out

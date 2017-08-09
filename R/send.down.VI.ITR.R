@@ -8,7 +8,8 @@
 #' @param ctg identifies the categorical input columns.  Defaults to NA.  Not available yet. 
 #' @param n0 minimum number of treatment/control observations needed in a split to call a node terminal. Defaults to 5. 
 #' @param AIPWE indicator for AIPWE estimation.
-#' @return summary of tree performance
+#' @return \item{tre0}{input tree with score from original tree and score from permutation from each variable used in the tree}
+#' @return \item{score}{score from the permuted data}
 #' @export
 
 
