@@ -25,7 +25,7 @@ covariates X1 and X3 both interact with treatment effect (one-way interactions).
 \item{cut3}{cutpoint for depth=2 on covariate X3.}
 }
 \value{
-dataframe containing y (outcome), X1-X4 (covariates), trt (treatment), prtx (probability of being in treatment group), and ID variable
+data frame containing y (outcome), X1-X4 (covariates), trt (treatment), prtx (probability of being in treatment group), and ID variable
 }
 \description{
 Simulates data from an observational study according to the following model:

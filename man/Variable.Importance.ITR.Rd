@@ -23,7 +23,7 @@ Variable.Importance.ITR(RF.fit, n0 = 5, N0 = 20, sort = T, details = F,
 \item{n0}{minimum number of treatment/control observations needed in a split to call a node terminal. Defaults to 5.}
 }
 \value{
-Returns order variable importance measure calculated for each splitting variable.
+Returns ordered variable importance measure calculated for each splitting variable.
 }
 \description{
 This function accepts a forest object from the `Build.RF.ITR` function and estimates the importance of each
@@ -33,9 +33,12 @@ the original value and permuted value indicates the predictor is more important 
 returns the variables in order of importance along with the importance measure, scaled to be out of 1.
 }
 \examples{
-dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)
-#Build a forest with 100 trees
+set.seed(1)
+dat <- gdataM(n = 1000, depth = 2, beta1 = 3, beta2 = 1)
+# Build a forest with 100 trees
 forest <- Build.RF.ITR(dat, col.y="y", col.trt="trt", col.prtx="prtx", split.var=1:4, ntree=100)
-#Calculate variable importance measures
+# Calculate variable importance measures (X1 and X3 should be returned as the most important)
 Variable.Importance.ITR(forest)
+X1         X3         X4         X2 
+0.78577397 0.11319882 0.07425691 0.02677030 
 }

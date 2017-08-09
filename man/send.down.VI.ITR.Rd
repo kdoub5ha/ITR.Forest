@@ -25,5 +25,7 @@ send.down.VI.ITR(dat.new, tre, col.y, col.trt, col.prtx, ctg = NULL,
 \item{tree}{constructed tree.}
 }
 \value{
-summary of tree performance
+\item{tre0}{input tree with score from original tree and score from permutation from each variable used in the tree}
+
+\item{score}{score from the permuted data}
 }

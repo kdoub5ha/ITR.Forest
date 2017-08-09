@@ -32,7 +32,7 @@ in treatment group.}
 \item{AIPWE}{indicator for AIPWE estimation}
 }
 \value{
-partition information based on itr value
+summary of the best split for a given data frame.
 }
 \description{
 The partitioning function is used inside of the tree growing functions.  It 

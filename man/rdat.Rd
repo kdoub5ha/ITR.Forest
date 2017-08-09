@@ -20,10 +20,10 @@ rdat(n = 100, K = 50, beta1 = 2, beta2 = 2, sigma = 1, cut1 = 0.5,
 then covariate X1 interacts with treatment. If set to another value, then 
 covariates X1 and X3 both interact with treatment effect (one-way interactions). Defaults to 1.}
 
-\item{cut1/cut2}{controls where the cutpoints are to define subgroups.}
+\item{cut1-cut4}{controls where the cutpoints are to define subgroups.}
 }
 \value{
-dataframe containing y (outcome), x1-x4 (covariates), trt (treatment), prtx (probability of being in treatment group), and ID variable
+data frame containing y (outcome), x1-x4 (covariates), trt (treatment), prtx (probability of being in treatment group), and ID variable
 }
 \description{
 Simulates data from an RCT according to the following model:

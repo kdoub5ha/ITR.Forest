@@ -37,7 +37,13 @@ Build.RF.ITR(dat, test = FALSE, col.y, col.trt, col.prtx = col.prtx,
 \item{avoid.nul.tree}{controls if trees with no splits (null trees) are allowed. Defaults to FALSE.}
 }
 \value{
-summary of randomly generated trees (summary done by tree)
+A list of characteristics of the forest.
+
+\item{ID.Boots.Samples}{list of bootstrap sample IDs}
+
+\item{TREES}{list of trees}
+
+\item{Model.Specification}{information about the input parameters of the forest}
 }
 \description{
 This function constructs a random forest of ITR trees using either the IPWE or AIPWE
@@ -49,8 +55,8 @@ function to estimate predictor importance.
 dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)
 forest<-Build.RF.ITR(dat=dat, col.y="y", col.trt="trt", col.prtx="prtx", 
                      split.var=1:4, ntree=100, avoid.nul.tree=T)
-This builds a forest of 500 trees using the dataset called 'dat' with columns
+This builds a forest of 100 trees using the dataset called 'dat' with columns
 'y', 'trt', and 'prtx' for the outcome, treatement indicator, and probability of being
 in treatment group, respectively.  The splitting variables are found in columns 1-4, 
-100 trees are generated, and we chose to avoid null trees.
+and we chose to avoid null trees.
 }

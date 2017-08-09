@@ -16,7 +16,7 @@ itrtest(dat, z, n0, aug)
 \item{aug}{logical indicator for AIPWE estimation (TRUE) or IPWE estimation (FALSE).}
 }
 \value{
-itr value from a defined split.
+ITR value from the new treatment assignments
 }
 \description{
 This function is used inside the tree growing functions.

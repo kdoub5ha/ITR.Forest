@@ -27,7 +27,7 @@ in treatment group.}
 \item{N0}{minimum number of observations needed to call a node terminal.  Defaults to 20.}
 }
 \value{
-`grow.ITR` returns the summary of a single interaction tree. Each `node` begins with "0" indicating the root node, 
+Summary of a single interaction tree. Each `node` begins with "0" indicating the root node, 
 followed by a "1" or "2" indicating the less than (or left) child node or greater than (or right) child node. 
 Additionally, the number of observations `size`, number treated `n.1`, number on control `n.0`, and treatment effect `trt.effect`
 summaries are provided.  The splitting information includes the column of the chosen splitting variable `var`, the variable name 'vname',
@@ -39,6 +39,6 @@ This function grows an interaction tree using either the IPWE or AIPWE method (A
 }
 \examples{
 dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)
-tree<-grow.ITR(data=dat, split.var=1:4)
-Generates tree using rctdata with potential splitting variables located in columns 1-4.
+tree < -grow.ITR(data=dat, split.var=1:4)
+Generates tree using simualated EMR data with splitting variables located in columns 1-4.
 }

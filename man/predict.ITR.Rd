@@ -11,6 +11,23 @@
 
 \item{new.dat}{data for which predictions are desired}
 }
+\value{
+A summary list of the following elements:
+
+\item{SummaryTreat}{proportion of trees voting for treatment (trt=1). 
+If input is a single tree then SummaryTreat is a single number. 
+If input is a forest then SummaryTreat is a vector equal to the length of the number of trees.}
+
+\item{trt.pred}{vector of treatment assignments {0, 1} based on the tree vote (single tree) or majority of tree votes (forest). This vector has length equal to the number of rows in `new.dat`.}
+
+\item{n.trees}{number of tree in `input`}
+
+\item{tree.votes}{matrix of votes for each tree for each subject in `new.dat`. Rows correspond to trees in `input` and columns correspond to subjects in `new.dat`.}
+
+\item{data}{input data frame `new.dat`}
+
+\item{NA.trees}{number of trees returning no votes. In a forest, this is the number of null trees.}
+}
 \description{
 Used to make treatment prediction for a single tree or random forest. If the 
 input is a forest, then the proportion of trees voting for treatment (`trt=1`) is returned. 

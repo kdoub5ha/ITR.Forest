@@ -14,5 +14,7 @@ send.down(dat.new, tre, char.var = 1000, ctgs = NULL)
 \item{dat}{data to be run down the tree.  Required input.}
 }
 \value{
-summary of node assignments for `dat.new` run down tree `tre`
+\item{data}{input data with extra column of node assignments}
+
+\item{tree}{input tree with extra column for number of observations in each node}
 }

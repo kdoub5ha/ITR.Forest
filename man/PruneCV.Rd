@@ -2,7 +2,8 @@
 % Please edit documentation in R/PruneCV.R
 \name{PruneCV}
 \alias{PruneCV}
-\title{Performs k-fold cross validation for selection optimal tuning parameter lambda.}
+\title{This function is outdated and it is recommended that users use treeCV instead.
+Performs k-fold cross validation for selection optimal tuning parameter lambda.}
 \usage{
 PruneCV(data, param, min.ndsz = 20, n0 = 5, split.var, nfolds = 10,
   graphic = FALSE, graphicname = NULL)
@@ -28,6 +29,7 @@ PruneCV(data, param, min.ndsz = 20, n0 = 5, split.var, nfolds = 10,
 summary of pruned branches and the associated value of the tree after pruning
 }
 \description{
+This function is outdated and it is recommended that users use treeCV instead.
 Performs k-fold cross validation for selection optimal tuning parameter lambda.
 }
 \examples{

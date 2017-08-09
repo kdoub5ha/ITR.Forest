@@ -4,7 +4,7 @@
 \alias{prune}
 \title{Prunes a tree for a given penalty value}
 \usage{
-prune(tre, a, train, test = NULL, AIPWE = F)
+prune(tre, a, train, test = NULL, AIPWE = F, n0 = 5)
 }
 \arguments{
 \item{tre}{sets the tree to be pruned}
@@ -18,7 +18,13 @@ prune(tre, a, train, test = NULL, AIPWE = F)
 \item{AIPWE}{indicator for AIPWE estimation.}
 }
 \value{
-summary of pruned branches and the associated value of the tree after pruning
+summary of pruned branches and the associated value of the tree after pruning.
+
+\item{result}{contains columns: `node.rm` which is the weakest link at each
+iteration of the pruning algorithm; `size.tree` and `n.tmnl` give number of total nodes and
+terminal nodes in each subtree; `alpha` is the weakest link scoring criteria; `V` and `V.test`
+are the overall value of the tree for the training and tesing samples; `V.a` and `Va.test`
+give the penalized value for the training and testing samples.}
 }
 \description{
 The `prune` function allows the user to specify a value of the penalty for a given tree. 

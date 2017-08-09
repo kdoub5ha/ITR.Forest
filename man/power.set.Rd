@@ -10,5 +10,5 @@ power.set(x)
 \item{x}{a categorical predictor.}
 }
 \value{
-Returns a list of the subsets of the predictor to be considered.
+List of unique permutations of predictor `x`
 }
