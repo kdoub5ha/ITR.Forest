@@ -9,6 +9,7 @@
 #' @param param vector of numeric values to be considered as the tuning parameter. Defaults to seq(0, 0.15, 0.1) but should be modified for each specific problem. 
 #' @param AIPWE logical indicating if the augmented estimator should be used. Defaults to FALSE.
 #' @param sort logical indicating if data should be sorted before folds are created. Defaults to FALSE. 
+#' @param ctgs columns of categorical variables. 
 #' @return A summary of the cross validation including optimal penalty parameter and the optimal model. 
 #' @return \item{best.tree}{optimal ITR tree model}
 #' @return \item{best.lambda}{optimal lambda}
@@ -41,7 +42,7 @@
 
 
 treeCV <- function(tre, dat, nfolds = 5, param = seq(0, 0.15, 0.01), 
-                   AIPWE = FALSE, N0=20, n0=5, sp.var, sort=FALSE){
+                   AIPWE = FALSE, N0=20, n0=5, sp.var, sort=FALSE, ctgs = ctg){
   input.tre <- tre
   input.dat <- dat
   
@@ -56,13 +57,13 @@ treeCV <- function(tre, dat, nfolds = 5, param = seq(0, 0.15, 0.01),
     in.train[[k]] <- input.dat[-which(folds==k,arr.ind=TRUE),]
     in.test[[k]]  <- input.dat[which(folds==k,arr.ind=TRUE),]
     trees[[k]] <- grow.ITR(in.train[[k]], in.test[[k]], split.var = sp.var, 
-                           min.ndsz = N0, n0=n0, AIPWE = AIPWE)
+                           min.ndsz = N0, n0=n0, AIPWE = AIPWE, ctg = ctgs)
   }  
   
   out <- matrix(0, ncol = length(trees), nrow = length(param))
   for(t in 1:length(trees)){
     
-    pru <- prune(trees[[t]], 0, in.train[[t]], in.test[[t]], AIPWE = FALSE)
+    pru <- prune(trees[[t]], 0, in.train[[t]], in.test[[t]], AIPWE = FALSE, ctgs = ctgs)
     
     for(j in 1:length(param)){
       row <- which.max(as.numeric(pru$V) - (param[j])*(as.numeric(pru$size.tree)-as.numeric(pru$size.tmnl)))
@@ -75,7 +76,7 @@ treeCV <- function(tre, dat, nfolds = 5, param = seq(0, 0.15, 0.01),
                         upper=result[,1]+result[,2]/sqrt(length(trees)))
   
   best.lam <- result2$Parameter[which(as.numeric(as.vector(result2$m))==max(as.numeric(as.vector(result2$m))))][1]
-  pruned <- prune(input.tre, best.lam, input.dat, AIPWE = FALSE)
+  pruned <- prune(input.tre, best.lam, input.dat, AIPWE = FALSE, ctgs = ctgs)
   
   row.prune <- as.numeric(pruned$subtree[as.numeric(pruned$V.a)==max(as.numeric(as.vector(pruned$V.a)))])[1]
   

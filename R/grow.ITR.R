@@ -110,7 +110,7 @@ grow.ITR<-function(data, test=NULL, min.ndsz=20, n0=5, split.var, ctg=NULL,
     for(p in 1:nrow(out)) {out$score.test[p]<-ifelse(is.na(out$var[p]),NA,out$score.test[p])}
   }
   if(!is.null(test)){
-    pruned<-prune(tre = out, a=0, train=data, test=test, AIPWE = AIPWE)
+    pruned<-prune(tre = out, a=0, train=data, test=test, AIPWE = AIPWE, ctgs = ctg)
     out$score.test <- as.numeric(pruned$Va.test[match(out$node, pruned$node.rm)])
   }
   out

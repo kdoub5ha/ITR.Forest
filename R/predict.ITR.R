@@ -6,6 +6,7 @@
 #' 
 #' @param input tree or forest object from `grow.ITR` or `Build.RF.ITR`.
 #' @param new.dat data for which predictions are desired
+#' @param ctgs columns of categorical variables. 
 #' @return A summary list of the following elements:
 #' @return \item{SummaryTreat}{proportion of trees voting for treatment (trt=1). 
 #' If input is a single tree then SummaryTreat is a single number. 
@@ -25,7 +26,7 @@
 
 
 
-predict.ITR <- function(input, new.dat){
+predict.ITR <- function(input, new.dat, ctgs = NULL){
   if(is.null(dim(input))) trees <- input$TREES
   if(!is.null(dim(input))) trees <- input
   dat <- new.dat
@@ -40,7 +41,7 @@ predict.ITR <- function(input, new.dat){
     if(!is.null(dim(input))) tre <- trees
     
     if(nrow(tre)>1){
-      send<-send.down(dat.new = dat, tre = tre)
+      send<-send.down(dat.new = dat, tre = tre, ctgs = ctgs)
       node<-substr(send$data$node,1,nchar(send$data$node)-1)
       direction<-substr(send$data$node,nchar(send$data$node),nchar(send$data$node))
       trt.dir<-tre[match(node,tre$node),]$cut.1

@@ -10,6 +10,7 @@
 #' @param train the training data used to create the tree
 #' @param test the testing data to be used.  Defaults to NULL.
 #' @param AIPWE indicator for AIPWE estimation.
+#' @param ctgs columns of categorical variables.
 #' @return summary of pruned branches and the associated value of the tree after pruning. 
 #' @return \item{result}{contains columns: `node.rm` which is the weakest link at each
 #' iteration of the pruning algorithm; `size.tree` and `n.tmnl` give number of total nodes and
@@ -21,7 +22,7 @@
 #' 
 
 
-prune <- function(tre, a, train, test=NULL, AIPWE = F, n0=5){
+prune <- function(tre, a, train, test=NULL, AIPWE = F, n0=5, ctgs = NULL){
   if(is.null(dim(tre))) stop("No Need to Prune Further.")
   result <- NULL
   n.tmnl <- sum(is.na(tre$var))
@@ -40,7 +41,7 @@ prune <- function(tre, a, train, test=NULL, AIPWE = F, n0=5){
         if(!is.null(test)) sub.tree[sub.tree$node==internal[j],][6:11] <- NA
         if(is.null(test)) sub.tree[sub.tree$node==internal[j],][6:10] <- NA
         
-        trt.pred <- predict.ITR(sub.tree, train)$trt.pred
+        trt.pred <- predict.ITR(sub.tree, train, ctgs = ctgs)$trt.pred
         
         score <- itrtest(dat = train, z=trt.pred, n0=n0, AIPWE)
       }else{
@@ -53,14 +54,14 @@ prune <- function(tre, a, train, test=NULL, AIPWE = F, n0=5){
     alpha <-max(r.value, na.rm = T)
     nod.rm <- internal[r.value==alpha]
     # if (length(nod.rm)>1) print("Multiple Nodes will be pruned. Check!")
-    trt.pred <- predict.ITR(tre, train)$trt.pred
+    trt.pred <- predict.ITR(tre, train, ctgs = ctgs)$trt.pred
     
     V <- itrtest(dat = train, z=trt.pred, n0=n0, AIPWE)
     V.a <- V - a*sum(!is.na(tre$score))
     
     if(!is.null(test)){
       # Calculate value for the training set
-      trt.pred <- predict.ITR(tre, test)$trt.pred
+      trt.pred <- predict.ITR(tre, test, ctgs = ctgs)$trt.pred
       V.test <- itrtest(dat = test, z=trt.pred, n0=-1, AIPWE)
       Va.test <- V.test - a*sum(!is.na(tre$score))
     }
