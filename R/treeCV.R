@@ -42,7 +42,7 @@
 
 
 treeCV <- function(tre, dat, nfolds = 5, param = seq(0, 0.15, 0.01), 
-                   AIPWE = FALSE, N0=20, n0=5, sp.var, sort=FALSE, ctgs = ctg){
+                   AIPWE = FALSE, N0=20, n0=5, sp.var, sort=FALSE, ctgs = NA){
   input.tre <- tre
   input.dat <- dat
   
