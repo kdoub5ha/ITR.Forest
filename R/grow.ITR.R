@@ -13,6 +13,8 @@
 #' @param n0 minimum number of treatment/control observations needed in a split to call a node terminal. Defaults to 5. 
 #' @param max.depth controls the maximum depth of the tree. Defaults to 15. 
 #' @param mtry sets the number of randomly selected splitting variables to be included. Defaults to number of splitting variables.
+#' @param in.forest logical for if the tree is being constructed in a forest. Should not be changed from defaults.
+#' @param stabilization gives the method used for calculating residuals. Current option is 'rf' for random forest. 
 #' @return Summary of a single interaction tree. Each `node` begins with "0" indicating the root node, 
 #' followed by a "1" or "2" indicating the less than (or left) child node or greater than (or right) child node. 
 #' Additionally, the number of observations `size`, number treated `n.1`, number on control `n.0`, and treatment effect `trt.effect`
@@ -27,8 +29,17 @@
 #' Generates tree using simualated EMR data with splitting variables located in columns 1-4.
 
 
-grow.ITR<-function(data, test=NULL, min.ndsz=20, n0=5, split.var, ctg=NULL, 
-                   max.depth=15, mtry=length(split.var), AIPWE=F)
+grow.ITR <- function(data, 
+                     test=NULL, 
+                     min.ndsz=20, 
+                     n0=5, 
+                     split.var, 
+                     ctg=NULL, 
+                     max.depth=15, 
+                     mtry=length(split.var), 
+                     AIPWE=F, 
+                     in.forest = FALSE, 
+                     stabilization = 'rf')
 {
   # initialize variables.
   out <- NULL
@@ -38,6 +49,12 @@ grow.ITR<-function(data, test=NULL, min.ndsz=20, n0=5, split.var, ctg=NULL,
   temp.test <- NULL
   temp.name <- NULL
   # record total dataset for spliting 
+  if(!in.forest & stabilization == 'rf'){
+    fit <- randomForest(y = data$y, x = as.matrix(data[,split.var]))
+    resids <- fit$y - fit$predicted
+    data$y <- resids
+    remove(fit)
+  }
   list.nd <- list(data)
   if (!is.null(test)) list.test <- list(test)
   name <- "0"

@@ -56,7 +56,7 @@ predict.ITR <- function(input, new.dat, ctgs = NULL){
     result <- rbind(result, trt.pred) 
   }
   out$SummaryTreat <- apply(result, 2, FUN = mean, na.rm=T)
-  if(is.null(dim(input))) out$trt.pred <- ifelse(out$SummaryTreat<0.5, 0, 1)
+  if(is.null(dim(input))) out$trt.pred <- ifelse(out$SummaryTreat < 0.5, 0, 1)
   if(!is.null(dim(input))) out$trt.pred <- out$SummaryTreat
   out$n.trees <- n.trees
   out$tree.votes <- result

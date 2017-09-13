@@ -42,9 +42,13 @@
 
 
 treeCV <- function(tre, dat, nfolds = 5, param = seq(0, 0.15, 0.01), 
-                   AIPWE = FALSE, N0=20, n0=5, sp.var, sort=FALSE, ctgs = NA){
+                   AIPWE = FALSE, N0=20, n0=5, sp.var, sort=FALSE, ctgs = ctg){
   input.tre <- tre
   input.dat <- dat
+  
+  fit <- randomForest(y = input.dat$y, as.matrix(input.dat[,split.var]))
+  resids <- fit$y - fit$predicted
+  input.dat$y <- resids
   
   # Shuffle data
   if(sort) input.dat <- input.dat[sample(1:nrow(input.dat), size = nrow(input.dat), replace = FALSE),]
