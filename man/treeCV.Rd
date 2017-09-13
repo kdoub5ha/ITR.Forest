@@ -5,7 +5,7 @@
 \title{Performs k-fold cross validation for selection optimal tuning parameter lambda.}
 \usage{
 treeCV(tre, dat, nfolds = 5, param = seq(0, 0.15, 0.01), AIPWE = FALSE,
-  N0 = 20, n0 = 5, sp.var, sort = FALSE)
+  N0 = 20, n0 = 5, sp.var, sort = FALSE, ctgs = ctg)
 }
 \arguments{
 \item{tre}{original large tree from grow.ITR()}
@@ -25,6 +25,8 @@ treeCV(tre, dat, nfolds = 5, param = seq(0, 0.15, 0.01), AIPWE = FALSE,
 \item{sp.var}{specifies the columns of splitting variables in the input data to grow the original tree.}
 
 \item{sort}{logical indicating if data should be sorted before folds are created. Defaults to FALSE.}
+
+\item{ctgs}{columns of categorical variables.}
 }
 \value{
 A summary of the cross validation including optimal penalty parameter and the optimal model.

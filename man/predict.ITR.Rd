@@ -4,12 +4,14 @@
 \alias{predict.ITR}
 \title{Treatment Prediction Function}
 \usage{
-\method{predict}{ITR}(input, new.dat)
+\method{predict}{ITR}(input, new.dat, ctgs = NULL)
 }
 \arguments{
 \item{input}{tree or forest object from `grow.ITR` or `Build.RF.ITR`.}
 
 \item{new.dat}{data for which predictions are desired}
+
+\item{ctgs}{columns of categorical variables.}
 }
 \value{
 A summary list of the following elements:

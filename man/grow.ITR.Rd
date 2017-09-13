@@ -4,8 +4,9 @@
 \alias{grow.ITR}
 \title{Grows a large interaction tree}
 \usage{
-grow.ITR(data, test = NULL, min.ndsz = 20, n0 = 5, split.var,
-  ctg = NULL, max.depth = 15, mtry = length(split.var), AIPWE = F)
+\method{grow}{ITR}(data, test = NULL, min.ndsz = 20, n0 = 5, split.var,
+  ctg = NULL, max.depth = 15, mtry = length(split.var), AIPWE = F,
+  in.forest = FALSE, stabilization = "rf")
 }
 \arguments{
 \item{data}{data set from which the tree is to be grown.  Must contain outcome, binary 
@@ -23,6 +24,10 @@ in treatment group.}
 \item{max.depth}{controls the maximum depth of the tree. Defaults to 15.}
 
 \item{mtry}{sets the number of randomly selected splitting variables to be included. Defaults to number of splitting variables.}
+
+\item{in.forest}{logical for if the tree is being constructed in a forest. Should not be changed from defaults.}
+
+\item{stabilization}{gives the method used for calculating residuals. Current option is 'rf' for random forest.}
 
 \item{N0}{minimum number of observations needed to call a node terminal.  Defaults to 20.}
 }
