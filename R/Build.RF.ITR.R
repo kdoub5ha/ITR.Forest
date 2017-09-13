@@ -53,7 +53,7 @@ Build.RF.ITR <- function(dat,
   out$TREES <- as.list(1:ntree)
   
   # Replace raw measures with residuals
-  fit <- randomForest(y = dat$y, x = as.matrix(dat[,split.var]))
+  fit <- randomForest(y = dat$y, x = as.data.frame(dat[,split.var]))
   resids <- fit$y - fit$predicted
   dat$y <- resids
   
