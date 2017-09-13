@@ -50,7 +50,7 @@ grow.ITR <- function(data,
   temp.name <- NULL
   # record total dataset for spliting 
   if(!in.forest & stabilization == 'rf'){
-    fit <- randomForest(y = data$y, x = as.matrix(data[,split.var]))
+    fit <- randomForest(y = data$y, x = as.data.frame(data[,split.var]))
     resids <- fit$y - fit$predicted
     data$y <- resids
     remove(fit)

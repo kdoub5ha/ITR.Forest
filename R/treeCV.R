@@ -46,7 +46,7 @@ treeCV <- function(tre, dat, nfolds = 5, param = seq(0, 0.15, 0.01),
   input.tre <- tre
   input.dat <- dat
   
-  fit <- randomForest(y = input.dat$y, as.matrix(input.dat[,sp.var]))
+  fit <- randomForest(y = input.dat$y, as.data.frame(input.dat[,sp.var]))
   resids <- fit$y - fit$predicted
   input.dat$y <- resids
   
