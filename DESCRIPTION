@@ -4,9 +4,9 @@ Version: 1.0.0
 Authors@R: c(person("Kevin", "Doubleday", email = "kevindoubleday@email.arizona.edu", role = c("aut", "cre")),
             person("Jin", "Zhou", role="ctb"))
 Description: The ITR.Tree package facilitates the construction of a large
-    interaction tree using the value function developed by Doubleday, Zhou, and Fu.
+    interaction tree using the value function ITR tree method developed by Doubleday, Zhou, and Fu.
     The functions available allow the user to simulate data from either an RCT or
-    observational study, build a large interaction tree, find important interaction
+    observational study, build a large interaction tree, generate a random forest, find important interaction
     variables, and plot the variable importance measures for all variables included
     in the tree construction. Currently, only continuous baseline variables are
     allowed in the construction of the tree.
