@@ -7,7 +7,7 @@
 Build.RF.ITR(dat, test = FALSE, col.y, col.trt, col.prtx = col.prtx,
   split.var, ctg = NULL, N0 = 20, n0 = 5, max.depth = 10, ntree = 500,
   mtry = max(floor(length(split.var)/3), 1), avoid.nul.tree = F,
-  AIPWE = F)
+  AIPWE = F, stabilize = TRUE)
 }
 \arguments{
 \item{dat}{the data set being used to grow the random forest. Required input.}
