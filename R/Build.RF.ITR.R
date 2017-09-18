@@ -46,17 +46,19 @@ Build.RF.ITR <- function(dat,
                          ntree = 500, 
                          mtry = max(floor(length(split.var)/3), 1),
                          avoid.nul.tree = F, 
-                         AIPWE = F)
+                         AIPWE = F, 
+                         stabilize = TRUE)
 {
   out <- as.list(NULL)
   out$ID.Boots.Samples  <- as.list(1:ntree)
   out$TREES <- as.list(1:ntree)
   
-  # Replace raw measures with residuals
-  fit <- randomForest(y = dat$y, x = as.data.frame(dat[,split.var]))
-  resids <- fit$y - fit$predicted
-  dat$y <- resids
-  
+  if(stabilize){
+    # Replace raw measures with residuals
+    fit <- randomForest(y = dat$y, x = as.data.frame(dat[,split.var]))
+    resids <- fit$y - fit$predicted
+    dat$y <- resids
+  }  
   b <- 1
   while (b <= ntree) {
     # TAKE BOOTSTRAP SAMPLES
