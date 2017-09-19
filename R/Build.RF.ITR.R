@@ -54,11 +54,18 @@ Build.RF.ITR <- function(dat,
   out$TREES <- as.list(1:ntree)
   
   if(stabilize){
-    # Replace raw measures with residuals
-    fit <- randomForest(y = dat$y, x = as.data.frame(dat[,split.var]))
-    resids <- fit$y - fit$predicted
-    dat$y <- resids
-  }  
+    if(stabilize.type == "rf"){
+      # Replace raw measures with residuals
+      fit <- randomForest(y = dat$y, x = as.data.frame(dat[,split.var]))
+      resids <- fit$y - fit$predicted
+      dat$y <- resids
+    }
+    if(stabilize.type == "linear"){
+      fit <- lm(dat$y~as.matrix(dat[ , c(split.var, which(colnames(dat) == "trt")) ]))
+      dat$y <- fit$residuals
+    }
+  }
+  
   b <- 1
   while (b <= ntree) {
     # TAKE BOOTSTRAP SAMPLES
