@@ -18,6 +18,8 @@
 #' @param mtry sets the number of randomly selected splitting variables to be included. Defaults to max of length(split.var)/3 rounded down and 1.
 #' @param ntree sets the number of trees to be generated. Defaults to 500.
 #' @param avoid.nul.tree controls if trees with no splits (null trees) are allowed. Defaults to FALSE.
+#' @param stabilize logical. Should a numerical stabilization be used. Can be random forest ('rf') or linear model ('linear')
+#' @param stabilize.type either 'rf' or 'linear' if stabilization requested.
 #' @return A list of characteristics of the forest.
 #' @return \item{ID.Boots.Samples}{list of bootstrap sample IDs}
 #' @return \item{TREES}{list of trees}
@@ -47,7 +49,8 @@ Build.RF.ITR <- function(dat,
                          mtry = max(floor(length(split.var)/3), 1),
                          avoid.nul.tree = F, 
                          AIPWE = F, 
-                         stabilize = TRUE)
+                         stabilize = TRUE, 
+                         stabilize.type = 'rf')
 {
   out <- as.list(NULL)
   out$ID.Boots.Samples  <- as.list(1:ntree)
