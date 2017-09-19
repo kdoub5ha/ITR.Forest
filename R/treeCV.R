@@ -42,7 +42,8 @@
 
 
 treeCV <- function(tre, dat, nfolds = 5, param = seq(0, 0.15, 0.01), 
-                   AIPWE = FALSE, N0=20, n0=5, sp.var, sort=FALSE, ctgs = NA){
+                   AIPWE = FALSE, N0=20, n0=5, sp.var, sort=FALSE, ctgs = NA, 
+                   stabilize = TRUE){
   input.tre <- tre
   input.dat <- dat
   
@@ -61,7 +62,8 @@ treeCV <- function(tre, dat, nfolds = 5, param = seq(0, 0.15, 0.01),
     in.train[[k]] <- input.dat[-which(folds==k,arr.ind=TRUE),]
     in.test[[k]]  <- input.dat[which(folds==k,arr.ind=TRUE),]
     trees[[k]] <- grow.ITR(in.train[[k]], in.test[[k]], split.var = sp.var, 
-                           min.ndsz = N0, n0=n0, AIPWE = AIPWE, ctg = ctgs)
+                           min.ndsz = N0, n0=n0, AIPWE = AIPWE, ctg = ctgs, 
+                           in.forest = stabilize)
   }  
   
   out <- matrix(0, ncol = length(trees), nrow = length(param))
