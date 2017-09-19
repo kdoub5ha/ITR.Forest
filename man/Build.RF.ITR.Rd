@@ -7,7 +7,7 @@
 Build.RF.ITR(dat, test = FALSE, col.y, col.trt, col.prtx = col.prtx,
   split.var, ctg = NULL, N0 = 20, n0 = 5, max.depth = 10, ntree = 500,
   mtry = max(floor(length(split.var)/3), 1), avoid.nul.tree = F,
-  AIPWE = F, stabilize = TRUE)
+  AIPWE = F, stabilize = TRUE, stabilize.type = "rf")
 }
 \arguments{
 \item{dat}{the data set being used to grow the random forest. Required input.}
@@ -35,6 +35,10 @@ Build.RF.ITR(dat, test = FALSE, col.y, col.trt, col.prtx = col.prtx,
 \item{mtry}{sets the number of randomly selected splitting variables to be included. Defaults to max of length(split.var)/3 rounded down and 1.}
 
 \item{avoid.nul.tree}{controls if trees with no splits (null trees) are allowed. Defaults to FALSE.}
+
+\item{stabilize}{logical. Should a numerical stabilization be used. Can be random forest ('rf') or linear model ('linear')}
+
+\item{stabilize.type}{either 'rf' or 'linear' if stabilization requested.}
 }
 \value{
 A list of characteristics of the forest.
