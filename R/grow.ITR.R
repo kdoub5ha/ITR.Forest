@@ -14,7 +14,7 @@
 #' @param max.depth controls the maximum depth of the tree. Defaults to 15. 
 #' @param mtry sets the number of randomly selected splitting variables to be included. Defaults to number of splitting variables.
 #' @param in.forest logical for if the tree is being constructed in a forest. Should not be changed from defaults.
-#' @param stabilization gives the method used for calculating residuals. Current option is 'rf' for random forest. 
+#' @param stabilize.type gives the method used for calculating residuals. Current options are 'rf' for random forest and 'linear' for linear model. 
 #' @return Summary of a single interaction tree. Each `node` begins with "0" indicating the root node, 
 #' followed by a "1" or "2" indicating the less than (or left) child node or greater than (or right) child node. 
 #' Additionally, the number of observations `size`, number treated `n.1`, number on control `n.0`, and treatment effect `trt.effect`
@@ -39,7 +39,7 @@ grow.ITR <- function(data,
                      mtry=length(split.var), 
                      AIPWE=F, 
                      in.forest = FALSE, 
-                     stabilization = 'rf')
+                     stabilize.type = 'rf')
 {
   # initialize variables.
   out <- NULL
@@ -49,11 +49,17 @@ grow.ITR <- function(data,
   temp.test <- NULL
   temp.name <- NULL
   # record total dataset for spliting 
-  if(!in.forest & stabilization == 'rf'){
-    fit <- randomForest(y = data$y, x = as.data.frame(data[,split.var]))
-    resids <- fit$y - fit$predicted
-    data$y <- resids
-    remove(fit)
+  if(!in.forest){
+    if(stabilize.type == "rf"){
+      # Replace raw measures with residuals
+      fit <- randomForest(y = data$y, x = as.data.frame(data[,split.var]))
+      resids <- fit$y - fit$predicted
+      data$y <- resids
+    }
+    if(stabilize.type == "linear"){
+      fit <- lm(data$y~as.matrix(data[ , c(split.var, which(colnames(data) == "trt")) ]))
+      data$y <- fit$residuals
+    }
   }
   list.nd <- list(data)
   if (!is.null(test)) list.test <- list(test)
