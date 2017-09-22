@@ -5,7 +5,8 @@
 \title{Performs k-fold cross validation for selection optimal tuning parameter lambda.}
 \usage{
 treeCV(tre, dat, nfolds = 5, param = seq(0, 0.15, 0.01), AIPWE = FALSE,
-  N0 = 20, n0 = 5, sp.var, sort = FALSE, ctgs = NA, stabilize = TRUE)
+  N0 = 20, n0 = 5, sp.var, sort = FALSE, ctgs = NA,
+  stabilize.type = NULL)
 }
 \arguments{
 \item{tre}{original large tree from grow.ITR()}
