@@ -6,7 +6,7 @@
 \usage{
 treeCV(tre, dat, nfolds = 5, param = seq(0, 0.15, 0.01), AIPWE = FALSE,
   N0 = 20, n0 = 5, sp.var, sort = FALSE, ctgs = NA,
-  stabilize.type = NULL)
+  stabilize.type = "rf", stabilize = TRUE)
 }
 \arguments{
 \item{tre}{original large tree from grow.ITR()}
@@ -28,6 +28,10 @@ treeCV(tre, dat, nfolds = 5, param = seq(0, 0.15, 0.01), AIPWE = FALSE,
 \item{sort}{logical indicating if data should be sorted before folds are created. Defaults to FALSE.}
 
 \item{ctgs}{columns of categorical variables.}
+
+\item{stabilize.type}{Type of stabilization. 'rf' for random forests (default) or 'linear' for linear model.}
+
+\item{stabilize}{logical. Should stabilization be used?}
 }
 \value{
 A summary of the cross validation including optimal penalty parameter and the optimal model.
