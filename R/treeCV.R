@@ -9,6 +9,8 @@
 #' @param param vector of numeric values to be considered as the tuning parameter. Defaults to seq(0, 0.15, 0.1) but should be modified for each specific problem. 
 #' @param AIPWE logical indicating if the augmented estimator should be used. Defaults to FALSE.
 #' @param sort logical indicating if data should be sorted before folds are created. Defaults to FALSE. 
+#' @param stabilize logical. Should stabilization be used?
+#' @param stabilize.type Type of stabilization. 'rf' for random forests (default) or 'linear' for linear model.  
 #' @param ctgs columns of categorical variables. 
 #' @return A summary of the cross validation including optimal penalty parameter and the optimal model. 
 #' @return \item{best.tree}{optimal ITR tree model}
@@ -43,17 +45,21 @@
 
 treeCV <- function(tre, dat, nfolds = 5, param = seq(0, 0.15, 0.01), 
                    AIPWE = FALSE, N0=20, n0=5, sp.var, sort = FALSE, ctgs = NA, 
-                   stabilize.type = NULL, stabilize = TRUE){
+                   stabilize.type = 'rf', stabilize = TRUE){
   input.tre <- tre
   input.dat <- dat
   
   if(stabilize){
-    if(stabilize.type = 'rf'){
+    if(stabilize.type == 'rf'){
       fit <- randomForest(y = input.dat$y, as.data.frame(input.dat[,sp.var]))
       resids <- fit$y - fit$predicted
       input.dat$y <- resids
-     }
-   }  
+    }
+    if(stabilize.type == "linear"){
+      fit <- lm(dat$y~as.matrix(dat[ , c(split.var, which(colnames(dat) == "trt")) ]))
+      dat$y <- fit$residuals
+    }
+  }  
   # Shuffle data
   if(sort) input.dat <- input.dat[sample(1:nrow(input.dat), size = nrow(input.dat), replace = FALSE),]
   folds <- cut(seq(1,nrow(input.dat)), breaks = nfolds, labels = FALSE)
