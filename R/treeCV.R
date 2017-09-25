@@ -43,14 +43,17 @@
 
 treeCV <- function(tre, dat, nfolds = 5, param = seq(0, 0.15, 0.01), 
                    AIPWE = FALSE, N0=20, n0=5, sp.var, sort = FALSE, ctgs = NA, 
-                   stabilize.type = NULL){
+                   stabilize.type = NULL, stabilize = TRUE){
   input.tre <- tre
   input.dat <- dat
   
-  fit <- randomForest(y = input.dat$y, as.data.frame(input.dat[,sp.var]))
-  resids <- fit$y - fit$predicted
-  input.dat$y <- resids
-  
+  if(stabilize){
+    if(stabilize.type = 'rf'){
+      fit <- randomForest(y = input.dat$y, as.data.frame(input.dat[,sp.var]))
+      resids <- fit$y - fit$predicted
+      input.dat$y <- resids
+     }
+   }  
   # Shuffle data
   if(sort) input.dat <- input.dat[sample(1:nrow(input.dat), size = nrow(input.dat), replace = FALSE),]
   folds <- cut(seq(1,nrow(input.dat)), breaks = nfolds, labels = FALSE)
@@ -63,7 +66,7 @@ treeCV <- function(tre, dat, nfolds = 5, param = seq(0, 0.15, 0.01),
     in.test[[k]]  <- input.dat[which(folds==k,arr.ind=TRUE),]
     trees[[k]] <- grow.ITR(in.train[[k]], in.test[[k]], split.var = sp.var, 
                            min.ndsz = N0, n0=n0, AIPWE = AIPWE, ctg = ctgs, 
-                           in.forest = FALSE, stabilize.type = stabilize.type)
+                           in.forest = TRUE, stabilize.type = stabilize.type)
   }  
   
   out <- matrix(0, ncol = length(trees), nrow = length(param))
