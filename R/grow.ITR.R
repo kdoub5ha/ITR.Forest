@@ -25,8 +25,8 @@
 #' @export
 #' @examples
 #' dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)
-#' tree < -grow.ITR(data=dat, split.var=1:4)
 #' Generates tree using simualated EMR data with splitting variables located in columns 1-4.
+#' tree < -grow.ITR(data=dat, split.var=1:4)
 
 
 grow.ITR <- function(data, 

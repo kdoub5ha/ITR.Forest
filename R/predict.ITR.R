@@ -19,9 +19,9 @@
 #' @export
 #' @examples
 #' dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)
-#' #Build a forest with 100 trees
+#' # Build a forest with 100 trees
 #' forest <- Build.RF.ITR(dat, col.y="y", col.trt="trt", col.prtx="prtx", split.var=1:4, ntree=100)
-#' #Predict treatment assignments for 1000 observations in `dat`
+#' # Predict treatment assignments for 1000 observations in `dat`
 #' predict.ITR(forest, dat)
 
 

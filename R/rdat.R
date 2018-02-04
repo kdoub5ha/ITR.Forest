@@ -16,9 +16,9 @@
 #' @export
 #' @examples
 #' 
+#' # This generates a dataframe with 500 observations, X1 as the only variable interacting with 
+#' # the treatment, and a signal to noise ratio of 2/2=1.
 #' data<-rdat(n=500)
-#' This generates a dataframe with 500 observations, X1 as the only variable interacting with 
-#' the treatment, and a signal to noise ratio of 2/2=1.
 
 rdat<-function(n=100, K =50, 
                beta1=2, beta2=2,

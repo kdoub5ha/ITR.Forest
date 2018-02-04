@@ -18,9 +18,9 @@
 #' @return data frame containing y (outcome), X1-X4 (covariates), trt (treatment), prtx (probability of being in treatment group), and ID variable
 #' @export
 #' @examples
+#' # This generates a dataframe with 500 observations, X1 as the only variable interacting with 
+#' # the treatment, and a signal to noise ratio of 1/2.
 #' data<-gdataM(n=500, depth=1, beta1=1, beta2=2)
-#' This generates a dataframe with 500 observations, X1 as the only variable interacting with 
-#' the treatment, and a signal to noise ratio of 1/2.
 
 
 gdataM <- function(n,depth, beta1, beta2, 
