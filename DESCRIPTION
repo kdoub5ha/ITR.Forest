@@ -12,6 +12,7 @@ Description: The ITR.Tree package facilitates the construction of a large
     allowed in the construction of the tree.
 Depends:
     R (>= 3.2.2)
+VignetteBuilder: knitr
 License: No license
 LazyData: true
 RoxygenNote: 6.0.1.9000
