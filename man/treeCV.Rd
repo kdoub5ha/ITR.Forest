@@ -63,13 +63,13 @@ tre <- grow.ITR(dat, split.var = 1:4, min.ndsz = 5, n0 = 2)
 cv.prune <- treeCV(tre, dat, nfolds = 5, param = seq(0, 0.15, 0.01), sp.var = 1:4)
 
 # The best tree returned has the correct number of nodes
-cv.prune$best.tree
-  node size n.1 n.0 trt.effect var vname cut.1 cut.2  score
-1    0 1000 480 520  0.4264782   1    x1     r   0.3 4.8839
-3   01  317 162 155 -1.8782577  NA  <NA>  <NA>  <NA>     NA
-2   02  683 318 365  1.4908419   3    x3     r   0.1 5.0174
-4  021   85  36  49 -1.7575391  NA  <NA>  <NA>  <NA>     NA
-5  022  598 282 316  1.9529338  NA  <NA>  <NA>  <NA>     NA
+# cv.prune$best.tree
+#  node size n.1 n.0 trt.effect var vname cut.1 cut.2  score
+# 1    0 1000 480 520  0.4264782   1    x1     r   0.3 4.8839
+# 3   01  317 162 155 -1.8782577  NA  <NA>  <NA>  <NA>     NA
+# 2   02  683 318 365  1.4908419   3    x3     r   0.1 5.0174
+# 4  021   85  36  49 -1.7575391  NA  <NA>  <NA>  <NA>     NA
+# 5  022  598 282 316  1.9529338  NA  <NA>  <NA>  <NA>     NA
 
 
 }

@@ -38,7 +38,7 @@ dat <- gdataM(n = 1000, depth = 2, beta1 = 3, beta2 = 1)
 # Build a forest with 100 trees
 forest <- Build.RF.ITR(dat, col.y="y", col.trt="trt", col.prtx="prtx", split.var=1:4, ntree=100)
 # Calculate variable importance measures (X1 and X3 should be returned as the most important)
-Variable.Importance.ITR(forest)
-X1         X3         X4         X2 
-0.78577397 0.11319882 0.07425691 0.02677030 
+# Variable.Importance.ITR(forest)
+# X1         X3         X4         X2 
+# 0.78577397 0.11319882 0.07425691 0.02677030 
 }

@@ -4,7 +4,7 @@
 \alias{grow.ITR}
 \title{Grows a large interaction tree}
 \usage{
-\method{grow}{ITR}(data, test = NULL, min.ndsz = 20, n0 = 5, split.var,
+grow.ITR(data, test = NULL, min.ndsz = 20, n0 = 5, split.var,
   ctg = NULL, max.depth = 15, mtry = length(split.var), AIPWE = F,
   in.forest = FALSE, stabilize.type = "rf")
 }
@@ -44,6 +44,6 @@ This function grows an interaction tree using either the IPWE or AIPWE method (A
 }
 \examples{
 dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)
-tree < -grow.ITR(data=dat, split.var=1:4)
 Generates tree using simualated EMR data with splitting variables located in columns 1-4.
+tree < -grow.ITR(data=dat, split.var=1:4)
 }

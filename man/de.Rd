@@ -23,6 +23,6 @@ set.seed(10)
 dat<- gdataM(1000,2,3,1)
 tre <- grow.ITR(dat, split.var = 1:4)
 de('01', tree = tre)
-"011"  "012"  "0121" "0122"
+# "011"  "012"  "0121" "0122"
 
 }

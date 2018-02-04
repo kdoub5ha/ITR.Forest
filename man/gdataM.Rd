@@ -35,7 +35,7 @@ If depth=1, then subgrp=(X1 < 0.5)
 If depth!=1 then subgrp=(X1>0.3 & X3>0.1)
 }
 \examples{
+# This generates a dataframe with 500 observations, X1 as the only variable interacting with 
+# the treatment, and a signal to noise ratio of 1/2.
 data<-gdataM(n=500, depth=1, beta1=1, beta2=2)
-This generates a dataframe with 500 observations, X1 as the only variable interacting with 
-the treatment, and a signal to noise ratio of 1/2.
 }

@@ -33,7 +33,7 @@ If depth!=1 then subgrp=(x1>=0.3 & x3>=0.1)
 }
 \examples{
 
+# This generates a dataframe with 500 observations, X1 as the only variable interacting with 
+# the treatment, and a signal to noise ratio of 2/2=1.
 data<-rdat(n=500)
-This generates a dataframe with 500 observations, X1 as the only variable interacting with 
-the treatment, and a signal to noise ratio of 2/2=1.
 }
