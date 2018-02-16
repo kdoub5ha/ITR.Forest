@@ -1,0 +1,196 @@
+---
+title: "ITR Forest: Constructing a Treatment Decision Rule"
+author: "Kevin Doubleday"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ITR.Forest)
+library(randomForest)
+
+```
+
+# Introduction
+
+The package ITR.forest creates an individualized treatment decision rule using a recursive partitioning algorithm to grow a decision tree. The algorithm utilizes either an inverse probability weighted estimator (IPWE) or augmented inverse probability weighted estimator (AIPWE) as the reward function, maximizing the selected function at each split. *The current version of this package can be applied to data from completed randomized controlled trials (RCTs) or an electronic medical record (EMR) database where there are two treatment options, a continuous outcome, and continous or categorical predictors.* Additionlly, each patient needs to have an estimated propensity score, or probability of being assigned to treatment, $\hat{p}(t_i|\textbf{x}_i)$. For an RCT with 1:1 treatment allocation, for example, $\hat{p}(t_i|\textbf{x}_i) = 0.5$. For EMR data, $\hat{p}(t_i|\textbf{x}_i)$ can be found using logistic regression. Without loss of generality, we assume that larger values of the outcome are better.
+
+The IPWE is estimated from the data as $$\hat{V}_{IPWE}(r) = \left( \sum_{i=1}^{N} \frac{\textbf{I}_{t_i=r(\textbf{x}_i)}}{\hat{p}(t_i|\textbf{x}_i)}y_i \right) / \left(\sum_{i=1}^{N} \frac{\textbf{I}_{t_i=r(\textbf{x}_i)}} {\hat{p}(t_i|\textbf{x}_i)} \right). $$
+
+The AIPWE is estimated from the data as  $$\hat{V}_{AIPWE}(r) = \hat{V}_{IPWE}(r) - \left( \sum_{i=1}^{N} \frac{\textbf{I}_{t_i=r(\textbf{x}_i)} - \hat{p}(t_i|\textbf{x}_i)}{\hat{p}(t_i|\textbf{x}_i)}m(X_i) \right),$$
+where $m(X_i)=\mu(t_i=1, X_i)\cdot z_i + \mu(t_i=0, X_i)\cdot (1-z_i)$ is the estimated mean in a given node and is assigned based on the patient's original treatment assignment $t_i \in \{0,1\}$ and the new treatment assignment under consideration $z_i \in \{0,1\}$.
+
+Further details can be found in "A Novel Algorithm for Generating Individualized Treatment Decision Trees and Random Forests" by Doubleday and Zhou (\textit{In Review}). 
+
+The input dataset needs to have the following:  (1) propensity score column labeled `prtx`, (2) binary treatment column labeled `trt`, (3) ID column labeled `id`, (4) continuous outcome column labeled `y`, and (5) columns of predictors. 
+
+
+# Growing a Tree with Continuous Predictors
+
+A single ITR tree can be constructed using the function `grow.ITR` which requires an input dataset and a set of splitting variable columns. By default the number of observations allowed in a terminal node is 20 (`min.ndsz = 20`), there must be at least 5 observations from each treatment group in a terminal node (`n0 = 5`), and the maximum tree depth is set at 15 (`max.depth = 15`). The initial value of the root node is the maximum of $\hat{V}(r)$ with all subjects given treatment or all patients given control. A initial split of the root node is only made if there is a split for which the value in the root node increases. The same is true for additional splits so that the tree cannot grow larger unless there is an increase in overall value of the tree given by the split. 
+
+\pagebreak
+
+## Growing a Tree
+
+We will use the following example dataset generated from the function `gdataM()` which simulates EMR data from the model
+
+$$ Y = 1 + 2X_2 + 4X_4 + \beta_1*T*(\textbf{X} \in A) + \beta_2*(1-T)*(\textbf{X} \notin A) + \epsilon. $$ 
+
+where $A = \{X_1 > 0.3 \cap X_3 > 0.1\}$ when `depth=2` is specified. Covariates $X_1 - X_4 \sim \text{Unif}(0,1)$, errors follow $N(0,1)$, treatment assignments are $T \in \{0, 1\}$, `prtx` is the propensity score, and the signal to noise ratio $\theta$ is defined as $\beta_1/\beta_2$.
+ 
+\vspace{5mm}
+
+```{r, Code Data Gen, results='markup', echo=TRUE}
+set.seed(123)
+dat <- gdataM(n = 2500, beta1 = 3, beta2 = 1, depth = 2)
+head(dat)
+
+set.seed(10)
+covExtra<-matrix(sample(1:25, size = 10*nrow(dat), replace = T), nrow=nrow(dat))/25
+colnames(covExtra)<-paste("E", seq(1,10), sep = "")
+
+dat <- cbind(dat, covExtra)
+
+```
+ 
+\vspace{5mm}
+
+This dataset has 2500 observations with $\theta=3$. The argument `depth=2` indicates that there are two subgroup defining variables, $X_1$ and $X_3$. Changing this argument to `depth=1` would change the subgroup definition to $X_1<0.5$, having only a single interacting covariate. Additionally, there are 10 noise variables added which are not shown above and which users can generate on their own if they would like. The tree is constructed using the `grow.ITR()` function as follows with the AIPWE since we are analyzing an EMR dataset. 
+ 
+\vspace{5mm}
+
+```{r, Code Tree Growth, results='markup'}
+tre <- grow.ITR(data = dat, split.var = c(1:4, 9:18), AIPWE = TRUE)
+tre
+```
+ 
+\vspace{5mm}
+
+The output contains a summary of the tree structure. The `node` column begins with the root node `0` and each subsequent number indicates the direction of the split, with `1` indicating the left (less than or equal to) node and `2` indicating the right (greater than) node. The first row indicates that the covariate $X_1$ is selected as the first splitting variable with a cut point of `cut.2 = 0.3`. The decision is to send treatment to the right node (`cut.1 = "r"`). `size`, `n.1`, and `n.0` indicate there are 2500 observations in the root node, with 1294 treated and 1206 on control. The second row with `node = 01` contains information from the left child node with interpretations similar to those described for the root node. The splitting information denoted by `NA` indicates a terminal node, `011` for instance. 
+
+Note that in the case of this simulated data (depth 2) the correct tree structure splits the root node at $X_1=0.3$ and sends treatment to node `02`. Next, node `02` should be split a t $X_3=0.1$ and sends treatment to the right. We see that this tree structure represents this well, but has some additional splits which are not necessary.  
+
+## Pruning a Tree
+
+To avoid overfitting, a pruning procedure is introduced to penalize additional splits in the tree growing process. The function `prune(tre, a, train, test)` accomplishes this with penalty $\lambda=a$ applied using the weakest link criteria. The penalty is applied to subtree $\Gamma$. $$  V_\lambda (\Gamma)=V(\Gamma) - \lambda \cdot \left| \Gamma-\tilde{\Gamma} \right| $$ where $\left| \Gamma-\tilde{\Gamma} \right|$ is the number of internal nodes of subtree $\Gamma$, $V(\Gamma)$ is the value of the entire subtree, and $V_\lambda (\Gamma)$ is the penalized value. We trim the weakest branches first which are those with (1) the greatest number of parent nodes, and (2) contributes the smallest additional value to the tree. We can prune a tree as follows. The following example uses the tree above (`tre`) with a penalty of 0.05.
+ 
+\vspace{5mm}
+
+```{r, Code Tree Pruning, results='markup'}
+pruned <- prune(tre, a = 0.05, train = dat)
+pruned
+```
+ 
+\vspace{5mm}
+
+The first row represents the entire tree (`subtree 1`) and summarizes the value, penalized value, and weakest node (node to be removed next) by `V`, `V.a`, and `node.rm`. The `size.tree` and `size.tmnl` columns give the total number of nodes and terminal nodes in a given subtree. We want to select the tree with the highest penalized value, which would correspond to subtree 2 with a penalized value of `V.a = 6.1855`. This subtree has 3 terminal nodes. 
+
+## Cross Validation for Model Selection
+
+One issue with the approach above for model selection is the risk of overfitting through using the training data alone for model selection. The function `treeCV()` will perform n-fold cross validation to select the optimal tuning parameter ($\lambda$). The function returns the optimal model, selected penalty, and several summary measures. 
+
+```{r, Cross Validated Pruning, results='hide', echo=TRUE}
+cv.model.select <- treeCV(tre = tre, dat = dat, nfolds = 5, sp.var = c(1:4, 9:18), 
+                          param = seq(0, 1, 0.01), sort = FALSE, AIPWE = TRUE)
+```
+
+```{r, Cross Validated Pruning Printed Materials, results='show', echo=FALSE}
+cv.model.select$best.lambda
+cv.model.select$best.tree
+
+```
+
+The optimal lambda selected is 0.04 and the optimal tree has 3 terminal nodes. This tree structure corresponds to the correct tree structure for this particular simulation. Figure 1 shows the results of the cross validation as $\lambda$ increases. 
+
+```{r, Cross Validated Pruning Graphic, results='show', echo=F, message=F}
+
+g.plot <- ggplot(aes(x = Parameter,y = m), data = cv.model.select$details) + geom_point() + geom_line()
+g.plot <- g.plot + geom_errorbar(mapping = aes(x = Parameter, ymin = lower, ymax = upper), width = 0.001)
+g.plot <- g.plot + theme_bw() + xlab(expression(lambda)) + ylab(expression(V[lambda](Gamma)))
+g.plot
+
+
+```
+
+Figure 1. Cross validated value versus $\lambda$ with 95% error bars. 
+
+## Constructing an ITR Forest to Give Decision Rule
+
+A single tree which is trained using all available data may be overfitted and not extendable to subsequent observations. Hence, we make a decision rule using a forest of ITR trees in which each tree is more variable, but the aggregation of the trees in the forest mitigates this variance. The ITR forest is contructed using the function `Build.RF.ITR()` and requires the entry of a dataset, columns for the outcome, treatment, propensity score, and splitting variables. To randomized the growth of trees in the forest a subset of predictors, `mtry`, is selected as potential splitting variables at each split which defaults to the maximum of 1/3 the number of splitting variables and 1. The number of observations and the number of treated and control subjects allowed in a terminal node is given by `N0` and `n0`. By default the number of trees contructed, `ntree`, is 500. Each tree is grown using a bootstrap sample taken from the input dataset. The function returns the bootstrap samples used in tree construction, the trees, and the model parameters. The forest is contructed as follows and the first two trees are displayed as examples. 
+
+\vspace{5mm}
+
+```{r, Code Forest Growth, results='markup'}
+set.seed(2)
+forest <- Build.RF.ITR(dat, split.var = c(1:4, 9:18), col.y="y", col.trt="trt", 
+                       col.prtx="prtx", ntree = 500)
+forest$TREES[1:2]
+```
+
+We see that the first tree corresponds to the expected result and the second tree is a null tree. If the user wants, the generation of null trees can be avoided using the additional argument `avoid.nul.tree = TRUE`. We can now run a new observation down each of the trees and obtain a vote from each tree as to what the treatment assignment should be. The majority vote from the forest will be the ITR forest decision rule. This can be obtained using the `predict.ITR()` function. First we generate a new observation and second we make a treatment predition for this new observation. Shown is the treatment summary as the proportion of trees voting for treatment and the voting record for the first 10 trees. 
+
+\vspace{5mm}
+
+```{r, Treatment Prediction, results='markup', echo=TRUE}
+set.seed(10)
+new.obs <- gdataM(n = 1,depth = 2,beta1 = 3, beta2 = 1)
+new.obs
+new.obs <- cbind(new.obs, matrix(sample(1:25, size = 10, replace = TRUE)/25, ncol = 10))
+colnames(new.obs) <- colnames(dat)
+preds <- predict.ITR(forest, new.obs)
+preds$SummaryTreat
+preds$tree.votes[1:20]
+```
+ 
+\vspace{5mm}
+ 
+Note that the observation should receive treatment since $X_1>0.3$ and $X_3>0.1$. This forest has 100\% of the trees voting that the patient should receive treatment which would be a good decision for this patient since they are in the subgroup which benefits from treatment. Note that several of the trees return votes of `NA`. This means that the tree did not make an initial split, or was a null tree. 
+ 
+\pagebreak
+
+## Predictions for outside data
+
+Use the `predict.ITR()` function to make treatment predictions for a forest object created using `Build.RF.ITR()` or a single tree object created using `grow.ITR()`. For a forest, the output includes the proportion of trees voting for the treatment (`trt = 1`), votes from all the trees, the number of null trees in the forest, and a summary of the data and trees. An example for a single tree is shown below using the tree `tre` from above and 4 newly generated observations. 
+ 
+\vspace{5mm}
+
+```{r, Prediction, results='markup'}
+set.seed(1)
+new.dat <- gdataM(4, 2, 1, 1)
+new.dat <- cbind(new.dat, matrix(sample(1:25, size = 10, replace = TRUE)/25, ncol = 10))
+colnames(new.dat) <- colnames(dat)
+preds <- predict.ITR(tre, new.dat)
+new.dat
+preds$SummaryTreat
+```
+ 
+\vspace{5mm}
+
+Each element of `SummaryTreat` is the treatment decision for one of the new observations.
+
+## Variable Importance
+
+Last, we include a function to calculate the importance of a predictor in making the treatment assignment for an ITR forest. The variable importance is calculated by determining the out of bag (OOB) value $V_{OOB}(r)$ for the sample not used in tree construction (OOB sample), permuting the variable values for any predictor used in the tree construction, and re-running the OOB sample down the tree to obtain $V_{OOB permuted}(r)$. The larger the difference between $V_{OOB}(r)$ and $V_{OOB permuted}(r)$ the more important the predictor. This is done for each tree in the forest and importance measures for each variable are summed. We scale the measure to be out of 1 for easy interpretibility. This is done using the function `Variable.Importance.ITR()`.
+ 
+\vspace{5mm}
+
+```{r, Code Variable Importance, results='markup'}
+VI <- Variable.Importance.ITR(forest)
+VI
+```
+ 
+\vspace{5mm}
+
+We see that the variable forming the interaction subgroup, $X_1$ and $X_3$, are returned as the most important predictors. 
+
+## A Note on Numerical Consistency
+
+
+
+## References
+
+[In Review] Doubleday, K., Zhou, J., Fu, H. (2017), "A Novel Algorithm for Generating Individualized Treatment Decision Trees and Random Forests," \textit{Journal of Computational and Graphical Statistics}. 
+
+
