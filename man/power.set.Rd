@@ -12,3 +12,6 @@ power.set(x)
 \value{
 List of unique permutations of predictor `x`
 }
+\description{
+Finds unique combinations of categorical, non-ordinal variables.
+}

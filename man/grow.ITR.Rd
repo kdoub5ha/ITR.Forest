@@ -4,7 +4,7 @@
 \alias{grow.ITR}
 \title{Grows a large interaction tree}
 \usage{
-grow.ITR(data, test = NULL, min.ndsz = 20, n0 = 5, split.var,
+\method{grow}{ITR}(data, test = NULL, min.ndsz = 20, n0 = 5, split.var,
   ctg = NULL, max.depth = 15, mtry = length(split.var), AIPWE = F,
   in.forest = FALSE, stabilize.type = "rf")
 }

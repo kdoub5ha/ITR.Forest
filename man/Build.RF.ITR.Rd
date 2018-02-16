@@ -62,5 +62,5 @@ dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)
 # in treatment group, respectively.  The splitting variables are found in columns 1-4, 
 # and we chose to avoid null trees.
 forest<-Build.RF.ITR(dat=dat, col.y="y", col.trt="trt", col.prtx="prtx", 
-                     split.var=1:4, ntree=100, avoid.nul.tree=T)
+                     split.var=1:4, ntree=100, avoid.nul.tree=T, stabilize = F)
 }

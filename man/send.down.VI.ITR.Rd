@@ -29,3 +29,7 @@ send.down.VI.ITR(dat.new, tre, col.y, col.trt, col.prtx, ctg = NULL,
 
 \item{score}{score from the permuted data}
 }
+\description{
+Sends dat.new down a tree inside a random forest. 
+Calcuates value and permuted value for variable importance measures
+}

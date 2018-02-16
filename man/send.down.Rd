@@ -18,3 +18,6 @@ send.down(dat.new, tre, char.var = 1000, ctgs = NULL)
 
 \item{tree}{input tree with extra column for number of observations in each node}
 }
+\description{
+Sends dat.new down tree 'tre' to obtain node assignment.
+}

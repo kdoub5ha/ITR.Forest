@@ -34,6 +34,3 @@ This function uses the "weakest link" criteria in order to evaluate the order in
 and gives the penalized value along with the unpenalized value. If testing data are provided for validation, 
 then the penalized and unpenalized values from the testing data run down the tree structure are also provided.
 }
-\examples{
-
-}
