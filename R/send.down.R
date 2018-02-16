@@ -1,5 +1,6 @@
 #' @title Sends testing data down a tree to obtain terminal node assignments 
 #' 
+#' @description Sends dat.new down tree 'tre' to obtain node assignment. 
 #' @param dat data to be run down the tree.  Required input. 
 #' @param tre tree object from grow.ITR().  Required input.
 #' @param ctgs categorical variables, entered as columns in `dat.new`

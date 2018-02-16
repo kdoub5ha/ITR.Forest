@@ -18,7 +18,6 @@
 #' are the overall value of the tree for the training and tesing samples; `V.a` and `Va.test`
 #' give the penalized value for the training and testing samples.}
 #' @export
-#' @examples
 #' 
 
 

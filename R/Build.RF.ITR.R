@@ -26,14 +26,13 @@
 #' @return \item{Model.Specification}{information about the input parameters of the forest}
 #' @export
 #' @examples
-#' library(randomForest)
 #' dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)
 #' # This builds a forest of 100 trees using the dataset called 'dat' with columns
 #' # 'y', 'trt', and 'prtx' for the outcome, treatement indicator, and probability of being
 #' # in treatment group, respectively.  The splitting variables are found in columns 1-4, 
 #' # and we chose to avoid null trees.
 #' forest<-Build.RF.ITR(dat=dat, col.y="y", col.trt="trt", col.prtx="prtx", 
-#'                      split.var=1:4, ntree=100, avoid.nul.tree=T)
+#'                      split.var=1:4, ntree=100, avoid.nul.tree=T, stabilize = F)
 
 
 Build.RF.ITR <- function(dat, 
@@ -60,7 +59,7 @@ Build.RF.ITR <- function(dat,
   if(stabilize){
     if(stabilize.type == "rf"){
       # Replace raw measures with residuals
-      fit <- randomForest(y = dat$y, x = as.data.frame(dat[,split.var]))
+      fit <- randomForest::randomForest(y = dat$y, x = as.data.frame(dat[,split.var]))
       resids <- fit$y - fit$predicted
       dat$y <- resids
     }

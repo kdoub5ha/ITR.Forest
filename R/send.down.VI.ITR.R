@@ -1,5 +1,7 @@
 #' @title Sends testing data and permuted testing data down a bootstrap tree from a forest object. 
 #' 
+#' @description Sends dat.new down a tree inside a random forest. 
+#' Calcuates value and permuted value for variable importance measures 
 #' @param dat.new the new data set being sent down the tree. Required input. 
 #' @param tree constructed tree.
 #' @param col.y the response variable. Required input. 

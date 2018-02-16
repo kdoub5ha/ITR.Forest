@@ -1,5 +1,6 @@
 #' @title Categorical predictor subsetting in the tree growing function. 
 #' 
+#' @description Finds unique combinations of categorical, non-ordinal variables. 
 #' @param x a categorical predictor. 
 #' @return List of unique permutations of predictor `x` 
 #' @export
