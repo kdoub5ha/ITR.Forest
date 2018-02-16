@@ -8,7 +8,6 @@ output: pdf_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(ITR.Forest)
-library(randomForest)
 
 ```
 
@@ -185,12 +184,9 @@ VI
 
 We see that the variable forming the interaction subgroup, $X_1$ and $X_3$, are returned as the most important predictors. 
 
-## A Note on Numerical Consistency
-
-
 
 ## References
 
-[In Review] Doubleday, K., Zhou, J., Fu, H. (2017), "A Novel Algorithm for Generating Individualized Treatment Decision Trees and Random Forests," \textit{Journal of Computational and Graphical Statistics}. 
+[Accepted] Doubleday, K., Zhou, J., Fu, H. (2017), "A Novel Algorithm for Generating Individualized Treatment Decision Trees and Random Forests," \textit{Journal of Computational and Graphical Statistics}. 
 
 
