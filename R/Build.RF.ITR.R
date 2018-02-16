@@ -26,6 +26,7 @@
 #' @return \item{Model.Specification}{information about the input parameters of the forest}
 #' @export
 #' @examples
+#' library(randomForest)
 #' dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)
 #' # This builds a forest of 100 trees using the dataset called 'dat' with columns
 #' # 'y', 'trt', and 'prtx' for the outcome, treatement indicator, and probability of being
