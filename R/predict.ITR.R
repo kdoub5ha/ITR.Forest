@@ -16,6 +16,7 @@
 #' @return \item{tree.votes}{matrix of votes for each tree for each subject in `new.dat`. Rows correspond to trees in `input` and columns correspond to subjects in `new.dat`.}
 #' @return \item{data}{input data frame `new.dat`}
 #' @return \item{NA.trees}{number of trees returning no votes. In a forest, this is the number of null trees.}
+#' @import randomForest
 #' @export
 #' @examples
 #' dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)

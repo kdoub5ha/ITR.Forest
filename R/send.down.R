@@ -1,16 +1,20 @@
 #' @title Sends testing data down a tree to obtain terminal node assignments 
 #' 
 #' @description Sends dat.new down tree 'tre' to obtain node assignment. 
-#' @param dat data to be run down the tree.  Required input. 
+#' @param dat.new data to be run down the tree.  Required input. 
 #' @param tre tree object from grow.ITR().  Required input.
 #' @param ctgs categorical variables, entered as columns in `dat.new`
+#' @param char.var internal variable.
 #' @return \item{data}{input data with extra column of node assignments}
 #' @return \item{tree}{input tree with extra column for number of observations in each node}
 #' @export
 
 
 
-send.down <- function(dat.new, tre, char.var=1000, ctgs=NULL)
+send.down <- function(dat.new, 
+                      tre, 
+                      char.var = 1000, 
+                      ctgs = NULL)
 {
   call <- match.call()
   out <- match.call(expand = F)

@@ -6,13 +6,14 @@
 #' @param data data set from which the tree is to be grown.  Must contain outcome, binary 
 #'  treatment indicator, columns of splitting covariates, and column of probability of being
 #'  in treatment group.
+#' @param test testing data
 #' @param split.var columns of potential spliting variables. Required input.
 #' @param min.ndsz minimum number of observations required to call a node terminal. Defaults to 20.
 #' @param ctg identifies the categorical input columns.  Defaults to NULL.  Not available yet. 
-#' @param N0 minimum number of observations needed to call a node terminal.  Defaults to 20. 
 #' @param n0 minimum number of treatment/control observations needed in a split to call a node terminal. Defaults to 5. 
 #' @param max.depth controls the maximum depth of the tree. Defaults to 15. 
 #' @param mtry sets the number of randomly selected splitting variables to be included. Defaults to number of splitting variables.
+#' @param AIPWE logical. Should AIPWE (TRUE) or IPWE (FALSE) be used. 
 #' @param in.forest logical for if the tree is being constructed in a forest. Should not be changed from defaults.
 #' @param stabilize.type gives the method used for calculating residuals. Current options are 'rf' for random forest and 'linear' for linear model. 
 #' @return Summary of a single interaction tree. Each `node` begins with "0" indicating the root node, 
@@ -21,12 +22,12 @@
 #' summaries are provided.  The splitting information includes the column of the chosen splitting variable `var`, the variable name 'vname',
 #' the direction the treatment is sent `cut.1` ("r" for right child node, and "l" for left), the chosen split value `cut.2`, 
 #' and the estimated value function `score`.
-#'  
+#' @import randomForest
 #' @export
 #' @examples
 #' dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)
-#' Generates tree using simualated EMR data with splitting variables located in columns 1-4.
-#' tree < -grow.ITR(data=dat, split.var=1:4)
+#' # Generates tree using simualated EMR data with splitting variables located in columns 1-4.
+#' tree <- grow.ITR(data=dat, split.var=1:4)
 
 
 grow.ITR <- function(data, 

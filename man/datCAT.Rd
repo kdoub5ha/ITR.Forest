@@ -11,12 +11,4 @@ Simulated data from an RCT design with 4 categorical predictors.
 \format{
   A simulated data frame with 1000 observations on 4 categorical predictors (c1 - c4), a single outcome (y), binary treatment (trt), and associated propensity score (prtx). 
 }
-\details{
-}
-\source{
-}
-\references{
-}
-\examples{
-}
 \keyword{datasets}

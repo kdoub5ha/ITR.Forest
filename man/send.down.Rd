@@ -7,11 +7,13 @@
 send.down(dat.new, tre, char.var = 1000, ctgs = NULL)
 }
 \arguments{
+\item{dat.new}{data to be run down the tree.  Required input.}
+
 \item{tre}{tree object from grow.ITR().  Required input.}
 
-\item{ctgs}{categorical variables, entered as columns in `dat.new`}
+\item{char.var}{internal variable.}
 
-\item{dat}{data to be run down the tree.  Required input.}
+\item{ctgs}{categorical variables, entered as columns in `dat.new`}
 }
 \value{
 \item{data}{input data with extra column of node assignments}

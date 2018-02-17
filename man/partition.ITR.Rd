@@ -13,6 +13,10 @@ partition.ITR(dat, test = NULL, name = "0", min.ndsz = 20, n0 = 5,
 treatment indicator, columns of splitting covariates, and column of probability of being
 in treatment group.}
 
+\item{test}{testing data set}
+
+\item{name}{internal variable the keeps track of the current node(s).}
+
 \item{min.ndsz}{minimum number of observations required to call a node terminal. Defaults to 20.}
 
 \item{n0}{minimum number of treatment/control observations needed in a split to call a node terminal. Defaults to 5.}

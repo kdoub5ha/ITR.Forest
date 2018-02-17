@@ -6,6 +6,8 @@
 #' @param dat data set from which the partition is to be made.  Must contain outcome, binary 
 #'  treatment indicator, columns of splitting covariates, and column of probability of being
 #'  in treatment group.
+#' @param test testing data set 
+#' @param name internal variable the keeps track of the current node(s). 
 #' @param split.var columns of potential spliting variables. Required input.
 #' @param min.ndsz minimum number of observations required to call a node terminal. Defaults to 20.
 #' @param ctg identifies the categorical input columns.  Defaults to NULL.  Not available yet. 
@@ -20,8 +22,18 @@
 
 
 
-partition.ITR<-function(dat, test=NULL, name="0", min.ndsz=20, n0=5, split.var, ctg=ctg, 
-                        max.depth=15, mtry=length(split.var), dat.rest=NULL, max.score=NULL, AIPWE = AIPWE)
+partition.ITR<-function(dat, 
+                        test = NULL, 
+                        name = "0", 
+                        min.ndsz = 20, 
+                        n0 = 5, 
+                        split.var,  
+                        ctg = ctg,
+                        max.depth = 15, 
+                        mtry = length(split.var), 
+                        dat.rest = NULL, 
+                        max.score = NULL, 
+                        AIPWE = AIPWE)
 {   
   # inialize various variable
   call <- match.call()

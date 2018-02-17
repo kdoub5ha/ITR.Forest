@@ -15,6 +15,7 @@
 #' @param cut1 cutpoint for depth=1 on covariate X1. 
 #' @param cut2 cutpoint for depth=2 on covariate X1. 
 #' @param cut3 cutpoint for depth=2 on covariate X3. 
+#' @param K internal variable used to generate the fineness of the unit interval on which covariates are generated. Defaults to 50.
 #' @return data frame containing y (outcome), X1-X4 (covariates), trt (treatment), prtx (probability of being in treatment group), and ID variable
 #' @export
 #' @examples
@@ -27,6 +28,7 @@ gdataM <- function(n,depth, beta1, beta2,
                    cut1=0.5, cut2=0.3, cut3=0.1, K=50){
   NX  <- 4
   NPATIENT  <- n
+  X1 <- X2 <- X3 <- X4 <- NULL
   for (j in 1:4) {
     assign(paste("X", j, sep=""),sample(1:K, n, replace=T)/K)
   }

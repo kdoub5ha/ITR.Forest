@@ -10,6 +10,7 @@
 #' @param train the training data used to create the tree
 #' @param test the testing data to be used.  Defaults to NULL.
 #' @param AIPWE indicator for AIPWE estimation.
+#' @param n0 minimum number of observations allowed in a treatment group. Defaults to 5. 
 #' @param ctgs columns of categorical variables.
 #' @return summary of pruned branches and the associated value of the tree after pruning. 
 #' @return \item{result}{contains columns: `node.rm` which is the weakest link at each
@@ -21,7 +22,13 @@
 #' 
 
 
-prune <- function(tre, a, train, test=NULL, AIPWE = F, n0=5, ctgs = NULL){
+prune <- function(tre, 
+                  a, 
+                  train, 
+                  test = NULL, 
+                  AIPWE = FALSE, 
+                  n0 = 5, 
+                  ctgs = NULL){
   if(is.null(dim(tre))) stop("No Need to Prune Further.")
   result <- NULL
   n.tmnl <- sum(is.na(tre$var))

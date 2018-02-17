@@ -3,12 +3,15 @@
 #' @description Sends dat.new down a tree inside a random forest. 
 #' Calcuates value and permuted value for variable importance measures 
 #' @param dat.new the new data set being sent down the tree. Required input. 
-#' @param tree constructed tree.
+#' @param tre constructed tree.
 #' @param col.y the response variable. Required input. 
 #' @param col.trt the treatment indicator.  Must be binary. Required input.
 #' @param col.prtx the probability of being assigned to treatment group. Required input. 
 #' @param ctg identifies the categorical input columns.  Defaults to NA.  Not available yet. 
 #' @param n0 minimum number of treatment/control observations needed in a split to call a node terminal. Defaults to 5. 
+#' @param N0 minimum number of observations needed in a node to stop splitting. 
+#' @param revise.tree internal variable.
+#' @param depth internval variable
 #' @param AIPWE indicator for AIPWE estimation.
 #' @return \item{tre0}{input tree with score from original tree and score from permutation from each variable used in the tree}
 #' @return \item{score}{score from the permuted data}
@@ -16,7 +19,17 @@
 
 
 
-send.down.VI.ITR<-function(dat.new, tre, col.y, col.trt, col.prtx, ctg=NULL, n0=n0, N0=N0, revise.tree=T,depth=1, AIPWE = AIPWE)
+send.down.VI.ITR<-function(dat.new, 
+                           tre, 
+                           col.y, 
+                           col.trt, 
+                           col.prtx, 
+                           ctg = NULL, 
+                           n0 = n0, 
+                           N0 = N0, 
+                           revise.tree = T,
+                           depth = 1, 
+                           AIPWE = AIPWE)
 {
   #Retrieve information from the bootstrap sample tree
   node.dat <- rep(0, nrow(dat.new))   		# COLUMNS CAN BE ADDED TO DATA

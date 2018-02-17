@@ -4,7 +4,7 @@
 \alias{prune}
 \title{Prunes a tree for a given penalty value}
 \usage{
-prune(tre, a, train, test = NULL, AIPWE = F, n0 = 5, ctgs = NULL)
+prune(tre, a, train, test = NULL, AIPWE = FALSE, n0 = 5, ctgs = NULL)
 }
 \arguments{
 \item{tre}{sets the tree to be pruned}
@@ -16,6 +16,8 @@ prune(tre, a, train, test = NULL, AIPWE = F, n0 = 5, ctgs = NULL)
 \item{test}{the testing data to be used.  Defaults to NULL.}
 
 \item{AIPWE}{indicator for AIPWE estimation.}
+
+\item{n0}{minimum number of observations allowed in a treatment group. Defaults to 5.}
 
 \item{ctgs}{columns of categorical variables.}
 }

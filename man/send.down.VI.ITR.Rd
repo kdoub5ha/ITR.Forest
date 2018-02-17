@@ -10,6 +10,8 @@ send.down.VI.ITR(dat.new, tre, col.y, col.trt, col.prtx, ctg = NULL,
 \arguments{
 \item{dat.new}{the new data set being sent down the tree. Required input.}
 
+\item{tre}{constructed tree.}
+
 \item{col.y}{the response variable. Required input.}
 
 \item{col.trt}{the treatment indicator.  Must be binary. Required input.}
@@ -20,9 +22,13 @@ send.down.VI.ITR(dat.new, tre, col.y, col.trt, col.prtx, ctg = NULL,
 
 \item{n0}{minimum number of treatment/control observations needed in a split to call a node terminal. Defaults to 5.}
 
-\item{AIPWE}{indicator for AIPWE estimation.}
+\item{N0}{minimum number of observations needed in a node to stop splitting.}
 
-\item{tree}{constructed tree.}
+\item{revise.tree}{internal variable.}
+
+\item{depth}{internval variable}
+
+\item{AIPWE}{indicator for AIPWE estimation.}
 }
 \value{
 \item{tre0}{input tree with score from original tree and score from permutation from each variable used in the tree}

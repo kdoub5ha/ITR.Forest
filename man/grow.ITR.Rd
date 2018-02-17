@@ -13,6 +13,8 @@
 treatment indicator, columns of splitting covariates, and column of probability of being
 in treatment group.}
 
+\item{test}{testing data}
+
 \item{min.ndsz}{minimum number of observations required to call a node terminal. Defaults to 20.}
 
 \item{n0}{minimum number of treatment/control observations needed in a split to call a node terminal. Defaults to 5.}
@@ -25,11 +27,11 @@ in treatment group.}
 
 \item{mtry}{sets the number of randomly selected splitting variables to be included. Defaults to number of splitting variables.}
 
+\item{AIPWE}{logical. Should AIPWE (TRUE) or IPWE (FALSE) be used.}
+
 \item{in.forest}{logical for if the tree is being constructed in a forest. Should not be changed from defaults.}
 
 \item{stabilize.type}{gives the method used for calculating residuals. Current options are 'rf' for random forest and 'linear' for linear model.}
-
-\item{N0}{minimum number of observations needed to call a node terminal.  Defaults to 20.}
 }
 \value{
 Summary of a single interaction tree. Each `node` begins with "0" indicating the root node, 
@@ -44,6 +46,6 @@ This function grows an interaction tree using either the IPWE or AIPWE method (A
 }
 \examples{
 dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)
-Generates tree using simualated EMR data with splitting variables located in columns 1-4.
-tree < -grow.ITR(data=dat, split.var=1:4)
+# Generates tree using simualated EMR data with splitting variables located in columns 1-4.
+tree <- grow.ITR(data=dat, split.var=1:4)
 }

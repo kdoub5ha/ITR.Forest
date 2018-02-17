@@ -16,6 +16,7 @@
 #' @param test indicator that determines if testing data is also run with each tree in the forest.  Defaults to FALSE. 
 #' @param max.depth controls the maximum depth of the tree. Defaults to 10. 
 #' @param mtry sets the number of randomly selected splitting variables to be included. Defaults to max of length(split.var)/3 rounded down and 1.
+#' @param AIPWE logical. Should AIPWE (TRUE) or IPWE (FALSE) be used. 
 #' @param ntree sets the number of trees to be generated. Defaults to 500.
 #' @param avoid.nul.tree controls if trees with no splits (null trees) are allowed. Defaults to FALSE.
 #' @param stabilize logical. Should a numerical stabilization be used. Can be random forest ('rf') or linear model ('linear')
@@ -24,6 +25,7 @@
 #' @return \item{ID.Boots.Samples}{list of bootstrap sample IDs}
 #' @return \item{TREES}{list of trees}
 #' @return \item{Model.Specification}{information about the input parameters of the forest}
+#' @import randomForest
 #' @export
 #' @examples
 #' dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)
@@ -32,7 +34,7 @@
 #' # in treatment group, respectively.  The splitting variables are found in columns 1-4, 
 #' # and we chose to avoid null trees.
 #' forest<-Build.RF.ITR(dat=dat, col.y="y", col.trt="trt", col.prtx="prtx", 
-#'                      split.var=1:4, ntree=100, avoid.nul.tree=T, stabilize = F)
+#'                      split.var=1:4, ntree=100, avoid.nul.tree=TRUE)
 
 
 Build.RF.ITR <- function(dat, 

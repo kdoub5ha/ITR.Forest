@@ -36,6 +36,8 @@ Build.RF.ITR(dat, test = FALSE, col.y, col.trt, col.prtx = col.prtx,
 
 \item{avoid.nul.tree}{controls if trees with no splits (null trees) are allowed. Defaults to FALSE.}
 
+\item{AIPWE}{logical. Should AIPWE (TRUE) or IPWE (FALSE) be used.}
+
 \item{stabilize}{logical. Should a numerical stabilization be used. Can be random forest ('rf') or linear model ('linear')}
 
 \item{stabilize.type}{either 'rf' or 'linear' if stabilization requested.}
@@ -62,5 +64,5 @@ dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)
 # in treatment group, respectively.  The splitting variables are found in columns 1-4, 
 # and we chose to avoid null trees.
 forest<-Build.RF.ITR(dat=dat, col.y="y", col.trt="trt", col.prtx="prtx", 
-                     split.var=1:4, ntree=100, avoid.nul.tree=T, stabilize = F)
+                     split.var=1:4, ntree=100, avoid.nul.tree=TRUE)
 }

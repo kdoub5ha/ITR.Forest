@@ -4,13 +4,15 @@
 \alias{Variable.Importance.ITR}
 \title{Calcuates variable importance measures for a random forest object.}
 \usage{
-Variable.Importance.ITR(RF.fit, n0 = 5, N0 = 20, sort = T, details = F,
-  truncate.zeros = T, depth = 1, AIPWE = F)
+Variable.Importance.ITR(RF.fit, n0 = 5, N0 = 20, sort = TRUE,
+  details = FALSE, truncate.zeros = TRUE, depth = 1, AIPWE = FALSE)
 }
 \arguments{
 \item{RF.fit}{forest object from Build.RF.ITR. Required input.}
 
 \item{n0}{minimum number of treatment/control observations needed in a split to call a node terminal. Defaults to 2.}
+
+\item{N0}{minimum number of observations needed in a split to call a node terminal. Defaults to 20.}
 
 \item{sort}{sort the variable importance measure? Defaults to TRUE.}
 
@@ -18,9 +20,9 @@ Variable.Importance.ITR(RF.fit, n0 = 5, N0 = 20, sort = T, details = F,
 
 \item{truncate.zeros}{sets variable importances less than 0 to 0. Defaults to TRUE.}
 
-\item{AIPWE}{indicator for AIPWE estimation.}
+\item{depth}{internal variable.}
 
-\item{n0}{minimum number of treatment/control observations needed in a split to call a node terminal. Defaults to 5.}
+\item{AIPWE}{indicator for AIPWE estimation.}
 }
 \value{
 Returns ordered variable importance measure calculated for each splitting variable.
@@ -38,7 +40,7 @@ dat <- gdataM(n = 1000, depth = 2, beta1 = 3, beta2 = 1)
 # Build a forest with 100 trees
 forest <- Build.RF.ITR(dat, col.y="y", col.trt="trt", col.prtx="prtx", split.var=1:4, ntree=100)
 # Calculate variable importance measures (X1 and X3 should be returned as the most important)
-# Variable.Importance.ITR(forest)
-# X1         X3         X4         X2 
-# 0.78577397 0.11319882 0.07425691 0.02677030 
+ Variable.Importance.ITR(forest)
+# X1          X3          X4          X2 
+# 0.727854671 0.260080262 0.009528276 0.002536791 
 }

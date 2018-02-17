@@ -9,24 +9,34 @@
 #' @param RF.fit forest object from Build.RF.ITR. Required input. 
 #' @param n0 minimum number of treatment/control observations needed in a split to call a node terminal. Defaults to 2. 
 #' @param sort sort the variable importance measure? Defaults to TRUE. 
-#' @param n0 minimum number of treatment/control observations needed in a split to call a node terminal. Defaults to 5. 
+#' @param N0 minimum number of observations needed in a split to call a node terminal. Defaults to 20. 
 #' @param details print details of each tree as the function progresses. Defaults to FALSE.
 #' @param truncate.zeros sets variable importances less than 0 to 0. Defaults to TRUE.
+#' @param depth internal variable.
 #' @param AIPWE indicator for AIPWE estimation.
 #' @return Returns ordered variable importance measure calculated for each splitting variable. 
+#' @import randomForest
 #' @examples 
 #' set.seed(1)
 #' dat <- gdataM(n = 1000, depth = 2, beta1 = 3, beta2 = 1)
 #' # Build a forest with 100 trees
 #' forest <- Build.RF.ITR(dat, col.y="y", col.trt="trt", col.prtx="prtx", split.var=1:4, ntree=100)
 #' # Calculate variable importance measures (X1 and X3 should be returned as the most important)
-#' # Variable.Importance.ITR(forest)
-#' # X1         X3         X4         X2 
-#' # 0.78577397 0.11319882 0.07425691 0.02677030 
+#'  Variable.Importance.ITR(forest)
+#' # X1          X3          X4          X2 
+#' # 0.727854671 0.260080262 0.009528276 0.002536791 
 #' @export
 
 
-Variable.Importance.ITR<-function(RF.fit, n0=5, N0=20, sort=T, details=F, truncate.zeros=T,depth=1, AIPWE = F){
+Variable.Importance.ITR <- function(RF.fit, 
+                                    n0 = 5, 
+                                    N0 = 20, 
+                                    sort = TRUE, 
+                                    details = FALSE,
+                                    truncate.zeros = TRUE,
+                                    depth = 1, 
+                                    AIPWE = FALSE)
+  {
   trees <- RF.fit$TREES
   id.boots <- RF.fit$ID.Boots.Samples
   # ARGUMENTS FOR MODEL SPECIFICATION 

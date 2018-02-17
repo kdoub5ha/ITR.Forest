@@ -19,33 +19,43 @@
 #' @return \item{pruned.tree}{pruning output given the optimal lambda}
 #' @return \item{data}{input data}
 #' @return \item{details}{summary of model performance for each lambda under consideration}
+#' @import randomForest
 #' @export
 #' @examples
 #' 
 #' # Grow large tree
 #' set.seed(1)
-#' dat <- rdat(1000, depth = 2)
-#' tre <- grow.ITR(dat, split.var = 1:4, min.ndsz = 5, n0 = 2)
+#' dat <- gdataM(n=1000, depth = 2, beta1=3, beta2=1)
+#' tre <- grow.ITR(dat, split.var = 1:4)
 #' 
 #' # This tre should have 3 terminal nodes (correct size), but has 4 as grown.
 #' 
 #' cv.prune <- treeCV(tre, dat, nfolds = 5, param = seq(0, 0.15, 0.01), sp.var = 1:4)
 #' 
 #' # The best tree returned has the correct number of nodes
-#' # cv.prune$best.tree
-#' #  node size n.1 n.0 trt.effect var vname cut.1 cut.2  score
-#' # 1    0 1000 480 520  0.4264782   1    x1     r   0.3 4.8839
-#' # 3   01  317 162 155 -1.8782577  NA  <NA>  <NA>  <NA>     NA
-#' # 2   02  683 318 365  1.4908419   3    x3     r   0.1 5.0174
-#' # 4  021   85  36  49 -1.7575391  NA  <NA>  <NA>  <NA>     NA
-#' # 5  022  598 282 316  1.9529338  NA  <NA>  <NA>  <NA>     NA
+#' cv.prune$best.tree
+#' #node size n.1 n.0 trt.effect var vname cut.1 cut.2  score
+#' #1    0 1000 479 521  1.2936724   1    X1     r  0.28 0.8768
+#' #2   01  277  86 191 -0.9439306  NA  <NA>  <NA>  <NA>     NA
+#' #3   02  723 393 330  2.0819738   3    X3     r   0.1 0.9426
+#' #5  021   78   9  69 -1.3600766  NA  <NA>  <NA>  <NA>     NA
+#' #4  022  645 384 261  2.4226122  NA  <NA>  <NA>  <NA>     NA
 #' 
 #' 
 
 
-treeCV <- function(tre, dat, nfolds = 5, param = seq(0, 0.15, 0.01), 
-                   AIPWE = FALSE, N0=20, n0=5, sp.var, sort = FALSE, ctgs = NA, 
-                   stabilize.type = 'rf', stabilize = TRUE){
+treeCV <- function(tre, 
+                   dat, 
+                   nfolds = 5, 
+                   param = seq(0, 0.15, 0.01), 
+                   AIPWE = FALSE, 
+                   N0=20, 
+                   n0=5, 
+                   sp.var, 
+                   sort = FALSE, 
+                   ctgs = NA, 
+                   stabilize.type = 'rf', 
+                   stabilize = TRUE){
   input.tre <- tre
   input.dat <- dat
   
@@ -75,7 +85,7 @@ treeCV <- function(tre, dat, nfolds = 5, param = seq(0, 0.15, 0.01),
                            in.forest = TRUE, stabilize.type = stabilize.type)
   }  
   
-  out <- matrix(0, ncol = length(trees), nrow = length(param))
+  out <- matrix(NA, ncol = length(trees), nrow = length(param))
   for(t in 1:length(trees)){
     
     pru <- prune(trees[[t]], 0, in.train[[t]], in.test[[t]], AIPWE = FALSE, ctgs = ctgs)
@@ -93,7 +103,7 @@ treeCV <- function(tre, dat, nfolds = 5, param = seq(0, 0.15, 0.01),
   best.lam <- result2$Parameter[which(as.numeric(as.vector(result2$m))==max(as.numeric(as.vector(result2$m))))][1]
   pruned <- prune(input.tre, best.lam, input.dat, AIPWE = FALSE, ctgs = ctgs)
   
-  row.prune <- as.numeric(pruned$subtree[as.numeric(pruned$V.a)==max(as.numeric(as.vector(pruned$V.a)))])[1]
+  row.prune <- as.numeric(pruned$subtree[which.max(as.numeric(as.vector(pruned$V.a)))])[1]
   
   best.tree <- input.tre
   if(row.prune > 1){

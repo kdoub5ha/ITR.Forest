@@ -10,11 +10,11 @@
 #' @examples 
 #' dat <- gdataM(n=1000, depth=2, beta1=3, beta2=1)
 #' # Assign every other patient to treatment
-#' # z <- rep(c(0,1), nrow(dat)/2)
+#' z <- rep(c(0,1), nrow(dat)/2)
 #' # IPWE value
-#' itrtest(dat, z, 5, F)
+#' itrtest(dat, z, 5, FALSE)
 #' # AIPWE value
-#' itrtest(dat, z, 5, T)
+#' itrtest(dat, z, 5, TRUE)
 #' @export
 
 
